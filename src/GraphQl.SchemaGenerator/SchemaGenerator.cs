@@ -136,7 +136,8 @@ namespace GraphQL.SchemaGenerator
 
                 if (type == null)
                 {
-                    continue;
+                    //will allow a mutation or query with no return type
+                    type = typeof(ScalarGraphType);
                 }
 
                 if (definition.Field.IsMutation)

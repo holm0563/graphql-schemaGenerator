@@ -1,7 +1,9 @@
-﻿using GraphQL.SchemaGenerator.Tests.Mocks;
+﻿using GraphQL.SchemaGenerator.Tests.Helpers;
+using GraphQL.SchemaGenerator.Tests.Mocks;
+using GraphQL.SchemaGenerator.Tests.Schemas;
 using Xunit;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Tests
 {
     public class MutationTests
     {
@@ -131,10 +133,19 @@ namespace GraphQL.SchemaGenerator.Tests
                   {
                     name: ""data"",
                     type: {
-                      kind: ""SCALAR"",
-                      ofType: null
+                    kind: ""NON_NULL"",
+                    ofType: {
+                        kind: ""SCALAR""
+                      }
                     }
                   },
+                    {
+                        name: ""decimal"",
+                        type: {
+                                kind: ""SCALAR"",
+                          ofType: null
+                        }
+                    },
                   {
                     name: ""state"",
                     type: {
@@ -149,5 +160,23 @@ namespace GraphQL.SchemaGenerator.Tests
             GraphAssert.QuerySuccess(schema, query, expected);
         }
 
+        [Fact]
+        public void PrimitiveExample_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(PrimitiveSchema));
+
+            var query = @"
+                mutation Test{
+                    testRequest (clear:true)
+                }
+            ";
+
+            var expected = @"{testRequest:null}";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+    
     }
 }

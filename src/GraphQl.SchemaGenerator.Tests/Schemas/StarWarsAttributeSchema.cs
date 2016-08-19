@@ -3,7 +3,7 @@ using GraphQL.SchemaGenerator.Attributes;
 using GraphQL.StarWars;
 using GraphQL.StarWars.Types;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Schemas
 {
     /// <summary>
     ///     An example of the sdk that could be exposed. This is decorated with attributes to self generate a graph schema. 

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using GraphQL.SchemaGenerator.Attributes;
 using GraphQL.StarWars;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Schemas
 {
     [GraphType]
     public class EchoSchema

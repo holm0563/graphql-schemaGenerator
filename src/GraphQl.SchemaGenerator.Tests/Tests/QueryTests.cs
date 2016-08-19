@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using GraphQL.Execution;
 using GraphQL.Http;
+using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
+using GraphQL.SchemaGenerator.Tests.Schemas;
 using GraphQL.StarWars;
 using GraphQL.StarWars.IoC;
 using GraphQL.StarWars.Types;
@@ -9,7 +11,7 @@ using GraphQL.Types;
 using GraphQL.Validation;
 using Xunit;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Tests
 {
     public class QueryTests
     {
@@ -346,6 +348,23 @@ namespace GraphQL.SchemaGenerator.Tests
                 ]
               }
             }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
+        public void PrimitiveString_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(PrimitiveSchema));
+
+            var query = @"
+               {
+                    testString ()
+                }
+            ";
+
+            var expected = @"{testString:""Hi""}";
 
             GraphAssert.QuerySuccess(schema, query, expected);
         }

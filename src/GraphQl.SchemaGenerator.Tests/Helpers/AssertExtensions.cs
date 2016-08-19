@@ -5,7 +5,7 @@ using GraphQL.Validation;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Helpers
 {
     public static class GraphAssert
     {

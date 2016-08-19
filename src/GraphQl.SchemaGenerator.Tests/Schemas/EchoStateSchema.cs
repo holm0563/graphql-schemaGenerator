@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using GraphQL.SchemaGenerator.Attributes;
 
-namespace GraphQL.SchemaGenerator.Tests
+namespace GraphQL.SchemaGenerator.Tests.Schemas
 {
     [GraphType]
     public class EchoStateSchema
