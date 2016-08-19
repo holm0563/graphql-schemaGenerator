@@ -360,7 +360,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             var query = @"
                {
-                    testString ()
+                    testString (){}
                 }
             ";
 
