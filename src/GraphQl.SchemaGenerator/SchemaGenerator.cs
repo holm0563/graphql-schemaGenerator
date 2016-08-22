@@ -134,12 +134,6 @@ namespace GraphQL.SchemaGenerator
 
                 var type = EnsureGraphType(definition.Field.Response);
 
-                if (type == null)
-                {
-                    //will allow a mutation or query with no return type
-                    type = typeof(ScalarGraphType);
-                }
-
                 if (definition.Field.IsMutation)
                 {
                     mutation.Field(
@@ -184,7 +178,7 @@ namespace GraphQL.SchemaGenerator
         /// <returns></returns>
         public static Type EnsureGraphType(Type parameterType)
         {
-            if (parameterType == null)
+            if (parameterType == null || parameterType == typeof(void))
             {
                 return typeof(StringGraphType);
             }
@@ -194,7 +188,15 @@ namespace GraphQL.SchemaGenerator
                 return parameterType;
             }
 
-            return GraphTypeConverter.ConvertTypeToGraphType(parameterType);
+            var type = GraphTypeConverter.ConvertTypeToGraphType(parameterType);
+
+            if (type == null)
+            {
+                //will allow a mutation or query with no return type
+                type = typeof(ScalarGraphType);
+            }
+
+            return type;
         }
 
         /// <summary>
