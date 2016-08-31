@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GraphQL.SchemaGenerator.Helpers
@@ -38,6 +39,30 @@ namespace GraphQL.SchemaGenerator.Helpers
         public static string GraphName(string name)
         {
             return SafeString(ConvertToCamelCase(name));
+        }
+
+        /// <summary>
+        ///     Get the real type name.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static string GetRealTypeName(Type t)
+        {
+            if (!t.IsGenericType)
+                return t.Name;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(t.Name.Substring(0, t.Name.IndexOf('`')));
+            sb.Append('<');
+            bool appendComma = false;
+            foreach (Type arg in t.GetGenericArguments())
+            {
+                if (appendComma) sb.Append(',');
+                sb.Append(GetRealTypeName(arg));
+                appendComma = true;
+            }
+            sb.Append('>');
+            return sb.ToString();
         }
     }
 }

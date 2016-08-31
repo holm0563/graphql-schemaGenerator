@@ -185,7 +185,7 @@ namespace GraphQL.SchemaGenerator.Helpers
                 return StringHelper.SafeString(displayNameAttr.DisplayName);
             }
 
-            return StringHelper.SafeString(type.Name);
+            return StringHelper.GetRealTypeName(type);
         }
     }
 }

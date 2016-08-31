@@ -78,10 +78,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Helpers\AssertExtensions.cs" />
+    <Compile Include="Schemas\GenericsSchema.cs" />
     <Compile Include="Schemas\PrimitiveSchema.cs" />
     <Compile Include="Schemas\EchoStateSchema.cs" />
     <Compile Include="Schemas\EchoSchema.cs" />
     <Compile Include="Tests\MutationTests.cs" />
+    <Compile Include="Tests\GenericQueryTests.cs" />
     <Compile Include="Tests\QueryTests.cs" />
     <Compile Include="Mocks\MockServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
