@@ -53,7 +53,7 @@ namespace GraphQL.SchemaGenerator.Helpers
 
             StringBuilder sb = new StringBuilder();
             sb.Append(t.Name.Substring(0, t.Name.IndexOf('`')));
-            sb.Append('<');
+            sb.Append("__");
             bool appendComma = false;
             foreach (Type arg in t.GetGenericArguments())
             {
@@ -61,7 +61,6 @@ namespace GraphQL.SchemaGenerator.Helpers
                 sb.Append(GetRealTypeName(arg));
                 appendComma = true;
             }
-            sb.Append('>');
             return sb.ToString();
         }
     }

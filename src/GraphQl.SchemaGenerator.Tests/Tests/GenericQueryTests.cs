@@ -121,21 +121,21 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                     {
                       name: ""echoGenerics"",
                       type: {
-                        name: ""EchoGeneric<String>"",
+                        name: ""EchoGeneric__String"",
                         kind: ""OBJECT""
                       }
             },
                     {
                       name: ""echoClassGenerics"",
                       type: {
-                        name: ""EchoGenericList<Inner>"",
+                        name: ""EchoGenericList__Inner"",
                         kind: ""OBJECT""
                       }
                     },
                     {
                       name: ""echoClassGenerics2"",
                       type: {
-                        name: ""EchoGenericList<Inner2>"",
+                        name: ""EchoGenericList__Inner2"",
                         kind: ""OBJECT""
                       }
                     }
