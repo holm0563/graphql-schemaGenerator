@@ -28,6 +28,7 @@ namespace GraphQL.Types
 
         private string ProcessString(string value)
         {
+            value = value.Replace("\\\\", "\\");
             value = value.Replace("\\\"", "\"");
             if (value.StartsWith("\"") && value.EndsWith("\""))
             {

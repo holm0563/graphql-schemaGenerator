@@ -15,7 +15,8 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
         {
             return new SchemaResponse
             {
-                Value = request?.Echo ?? 5
+                Value = request?.Echo ?? 5,
+                StringValue = request?.Data
             };
         }
 
@@ -86,6 +87,8 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
         public TimeSpan TimeSpan { get; set; }
 
         public byte[] ByteArray { get; set; }
+
+        public string StringValue { get; set; }
 
         public IDictionary<string, Response2> Values { get; set; } = new Dictionary<string, Response2>
         {

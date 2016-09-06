@@ -133,6 +133,41 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
         }
 
         [Fact]
+        public void WithStringParameterExample_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"{
+                  testRequest(request:{data:""yes""}) {stringValue}
+                }";
+
+            var expected = @"{
+              testRequest: {stringValue:""yes""}
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
+        public void WithStringEscapedParameterExample_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            //data = y\es m"am
+            var query = @"{
+                  testRequest(request:{data:""y\\es m\""am""}) {stringValue} 
+                }";
+
+            var expected = @"{
+              testRequest: {stringValue:""y\\es m\""am""}
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
         public void WithComplexParameters_Works()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
