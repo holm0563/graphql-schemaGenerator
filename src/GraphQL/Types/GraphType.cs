@@ -48,7 +48,7 @@ namespace GraphQL.Types
         {
             if (_fields.Exists(x => x.Name == name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "A field with that name is already registered.");
+                throw new ArgumentOutOfRangeException(nameof(name), $"A field with the name '{name}' is already registered.");
             }
 
             if (!type.IsSubclassOf(typeof(GraphType)))
