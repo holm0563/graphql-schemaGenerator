@@ -15,12 +15,12 @@ namespace GraphQL.SchemaGenerator.Helpers
         {
             if (!t.IsGenericType)
             {
-                return t.Name;
+                return StringHelper.SafeString(t.Name);
             }
 
             var sb = new StringBuilder();
 
-            string typePrefix = t.Name.Substring(0, t.Name.LastIndexOf("`"));
+            string typePrefix = StringHelper.SafeString(t.Name.Substring(0, t.Name.LastIndexOf("`")));
             if (!typePrefix.EndsWith("Wrapper"))
             {
                 sb.Append(typePrefix);
@@ -28,10 +28,9 @@ namespace GraphQL.SchemaGenerator.Helpers
             sb.Append(t.GetGenericArguments().Aggregate("_",
                 (string aggregate, Type type) =>
                 {
-                    return aggregate + (aggregate == "_" ? "" : ",") + GetFullName(type);
+                    return StringHelper.SafeString(aggregate) + (aggregate == "_" ? "" : "_") + GetFullName(type);
                 }
                 ));
-            //sb.Append("_");
 
             return sb.ToString();
         }

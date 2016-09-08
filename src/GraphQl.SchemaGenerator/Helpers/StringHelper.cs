@@ -49,15 +49,15 @@ namespace GraphQL.SchemaGenerator.Helpers
         public static string GetRealTypeName(Type t)
         {
             if (!t.IsGenericType)
-                return t.Name;
+                return SafeString(t.Name);
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(t.Name.Substring(0, t.Name.IndexOf('`')));
+            sb.Append(SafeString(t.Name.Substring(0, t.Name.IndexOf('`'))));
             sb.Append("__");
             bool appendComma = false;
             foreach (Type arg in t.GetGenericArguments())
             {
-                if (appendComma) sb.Append(',');
+                if (appendComma) sb.Append('_');
                 sb.Append(GetRealTypeName(arg));
                 appendComma = true;
             }

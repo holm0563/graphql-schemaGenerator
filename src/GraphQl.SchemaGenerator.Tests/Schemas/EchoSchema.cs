@@ -90,6 +90,8 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
 
         public string StringValue { get; set; }
 
+        public IDictionary<string, IDictionary<string, Episode>> NestDictionary { get; set; }
+
         public IDictionary<string, Response2> Values { get; set; } = new Dictionary<string, Response2>
         {
             {"99", new Response2 {ComplicatedResponse = new Schema1Request {Data = "99", Echo = 99} } },

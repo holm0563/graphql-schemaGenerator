@@ -90,6 +90,7 @@
     <Compile Include="Mocks\MockServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Schemas\StarWarsAttributeSchema.cs" />
+    <Compile Include="Tests\TypeHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphQl.SchemaGenerator\GraphQL.SchemaGenerator.csproj">
