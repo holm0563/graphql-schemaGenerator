@@ -133,6 +133,23 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
         }
 
         [Fact]
+        public void WithEnumerableParameterExample_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"{
+                  testEnumerableRequest(request:[{echo:1}]) {value}
+                }";
+
+            var expected = @"{
+              testEnumerableRequest: {value:1}
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
         public void WithStringParameterExample_Works()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());

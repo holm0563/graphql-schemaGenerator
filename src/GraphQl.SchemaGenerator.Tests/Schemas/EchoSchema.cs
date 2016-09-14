@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using GraphQL.SchemaGenerator.Attributes;
 using GraphQL.StarWars;
 
@@ -17,6 +18,20 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             {
                 Value = request?.Echo ?? 5,
                 StringValue = request?.Data
+            };
+        }
+
+        [GraphRoute]
+        public SchemaResponse TestEnumerableRequest(IEnumerable<Schema1Request> request)
+        {
+            if (request == null)
+            {
+                return null;
+            }
+            return new SchemaResponse
+            {
+                Value = request.First().Echo ?? 5,
+                StringValue = request.First().Data
             };
         }
 
