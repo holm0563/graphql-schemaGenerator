@@ -193,7 +193,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var query = @"{
                   testRequest(request:{
                     complexRequests:[{
-                            echo:345
+                            innerData:""345""
                         }]
                     }) {value}
                 }";

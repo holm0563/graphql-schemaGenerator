@@ -77,7 +77,9 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
 
         public decimal? Decimal { get; set; }
 
-        public IEnumerable<Schema1Request> ComplexRequests { get; set; }
+        public DateTimeOffset? Offset { get; set; }
+
+        public IEnumerable<InnerRequest> ComplexRequests { get; set; }
 
         public InnerRequest InnerRequest { get; set; }
     }

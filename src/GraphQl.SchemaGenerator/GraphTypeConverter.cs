@@ -91,7 +91,8 @@ namespace GraphQL.SchemaGenerator
                 return typeof(BooleanGraphType);
             }
 
-            if (propertyType == typeof(DateTime))
+            if (propertyType == typeof(DateTime)
+            || (propertyType == typeof(DateTimeOffset)))
             {
                 return typeof(DateGraphType);
             }
