@@ -17,6 +17,7 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
             var writer = new DocumentWriter(indent: true);
             var writtenResult = writer.Write(result.Data);
             var queryResult = CreateQueryResult(expected);
+            writer = new DocumentWriter(indent: true);
             var expectedResult = writer.Write(queryResult.Data);
 
             var errors = result.Errors?.FirstOrDefault();
