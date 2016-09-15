@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using GraphQL.SchemaGenerator.Attributes;
-using GraphQL.StarWars;
 
 namespace GraphQL.SchemaGenerator.Tests.Schemas
 {
@@ -120,5 +119,11 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
     public class Response2
     {
         public Schema1Request ComplicatedResponse { get; set; } 
+    }
+
+    public enum Episode
+    {
+        NEWHOPE,
+        JEDI
     }
 }

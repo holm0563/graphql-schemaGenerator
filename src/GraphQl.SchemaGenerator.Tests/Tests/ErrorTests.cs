@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Linq;
-using GraphQL.Execution;
-using GraphQL.Http;
-using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
-using GraphQL.StarWars;
-using GraphQL.StarWars.IoC;
-using GraphQL.StarWars.Types;
-using GraphQL.Types;
-using GraphQL.Validation;
 using Xunit;
 
 namespace GraphQL.SchemaGenerator.Tests.Tests

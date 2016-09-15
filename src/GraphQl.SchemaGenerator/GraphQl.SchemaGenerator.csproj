@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GraphQL, Version=0.11.0.493, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL.0.11.0.493\lib\net45\GraphQL.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
@@ -88,12 +92,6 @@
     <Compile Include="Wrappers\KeyValuePairGraphType.cs" />
     <Compile Include="Wrappers\KeyValuePairInputGraphType.cs" />
     <Compile Include="Wrappers\ObjectGraphTypeWrapper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GraphQL\GraphQL.csproj">
-      <Project>{c0e08b04-8a0d-4196-967c-8850825041b0}</Project>
-      <Name>GraphQL</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

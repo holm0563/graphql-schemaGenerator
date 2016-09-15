@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using GraphQL.SchemaGenerator.Attributes;
-using GraphQL.StarWars;
 
 namespace GraphQL.SchemaGenerator.Tests.Schemas
 {

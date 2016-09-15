@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using GraphQL.SchemaGenerator.Helpers;
 using GraphQL.SchemaGenerator.Tests.Schemas;
-using GraphQL.StarWars;
 using Xunit;
 
 namespace GraphQL.SchemaGenerator.Tests.Tests

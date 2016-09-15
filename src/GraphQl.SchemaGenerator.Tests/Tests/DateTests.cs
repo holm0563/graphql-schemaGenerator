@@ -3,7 +3,6 @@ using GraphQL.SchemaGenerator.Helpers;
 using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
-using GraphQL.StarWars;
 using Xunit;
 
 namespace GraphQL.SchemaGenerator.Tests.Tests

@@ -11,12 +11,13 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
     {
         public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected)
         {
-            var exec = new DocumentExecuter(new AntlrDocumentBuilder(), new DocumentValidator());
+            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator());
             var result = exec.ExecuteAsync(schema, null, query, null).Result;
 
             var writer = new DocumentWriter(indent: true);
             var writtenResult = writer.Write(result.Data);
-            var expectedResult = writer.Write(CreateQueryResult(expected).Data);
+            var queryResult = CreateQueryResult(expected);
+            var expectedResult = writer.Write(queryResult.Data);
 
             var errors = result.Errors?.FirstOrDefault();
             //for easy debugging

@@ -4,10 +4,6 @@ using GraphQL.Http;
 using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
-using GraphQL.StarWars;
-using GraphQL.StarWars.IoC;
-using GraphQL.StarWars.Types;
-using GraphQL.Types;
 using GraphQL.Validation;
 using Xunit;
 
@@ -15,79 +11,6 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 {
     public class QueryTests
     {
-        [Fact]
-        public void BasicExample_Works()
-        {
-            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
-            var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
-
-            var query = @"
-                query HeroNameQuery {
-                  hero {
-                    name
-                  }
-                }
-            ";
-
-            var expected = @"{
-              hero: {
-                name: 'R2-D2'
-              }
-            }";
-
-           GraphAssert.QuerySuccess(schema, query, expected);
-        }
-
-        /// <summary>
-        ///     The generate schema aligns with the self generated one.
-        /// </summary>
-        [Fact]
-        public void Schemas_Align()
-        {
-            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
-            var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
-
-            var container = new SimpleContainer();
-            container.Singleton(new StarWarsData());
-            container.Register<StarWarsQuery>();
-            container.Register<HumanType>();
-            container.Register<DroidType>();
-            container.Register<CharacterInterface>();
-            var manualSchema = new StarWarsSchema(type => (GraphType)container.Get(type));
-
-            Assert.Equal(manualSchema.Query.Fields.Count(), schema.Query.Fields.Count());
-            Assert.Equal(manualSchema.AllTypes.Count(), schema.AllTypes.Count()+1); //todo work on enum
-        }
-
-        [Fact]
-        public void BasicExample_WithEnums_Works()
-        {
-            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
-            var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
-
-            var query = @"
-                query HeroNameQuery {
-                  hero {
-                    appearsIn
-                    friends
-                  }
-                }
-            ";
-
-            var expected = @"{
-              hero: {
-                appearsIn: [
-                  ""NEWHOPE"",
-                  ""EMPIRE"",
-                  ""JEDI""
-                ],
-                friends: [""1"",""4""]
-                }
-            }";
-
-            GraphAssert.QuerySuccess(schema, query, expected);
-        }
-
         [Fact]
         public void CreateSchema_WithClassArgument_HasExpectedSchema()
         {
