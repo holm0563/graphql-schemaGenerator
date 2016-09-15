@@ -138,7 +138,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                   __type(name : ""Input_InnerRequest"") {
                     name
                     kind
-                }";
+                }}";
 
             var expected = @"{
               __type: {
@@ -148,36 +148,6 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             }";
 
             GraphAssert.QuerySuccess(schema, query, expected);
-        }
-
-        [Fact]
-        public void WithDecimal_HasCorrectType()
-        {
-            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
-            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
-
-            var query = @"{
-                  __type(name : ""Input_Schema1Request"") {
-                    name
-                    fields{
-                            name
-                            type{
-                                kind
-                                name
-                            }
-                        }
-                }";
-
-            var exec = new DocumentExecuter(new AntlrDocumentBuilder(), new DocumentValidator());
-            var result = exec.ExecuteAsync(schema, null, query, null).Result;
-
-            var writer = new DocumentWriter(indent: true);
-            var writtenResult = writer.Write(result.Data);
-
-            var errors = result.Errors?.FirstOrDefault();
-
-            Assert.Null(errors?.Message);
-            Assert.True(writtenResult.Contains("decimal"));
         }
 
         [Fact]
@@ -221,11 +191,11 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
 
             var query = @"{
-                  testRequest {date{{year}}
+                  testRequest {date}
                 }";
 
             var expected = @"{
-              testRequest: {date:{year:1999}}
+              testRequest: {date:""1999-01-01T07:00:00Z""}
                 }";
 
             GraphAssert.QuerySuccess(schema, query, expected);
@@ -249,7 +219,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                       }
                 }";
 
-            var exec = new DocumentExecuter(new AntlrDocumentBuilder(), new DocumentValidator());
+            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator());
             var result = exec.ExecuteAsync(schema, null, query, null).Result;
 
             var writer = new DocumentWriter(indent: true);
@@ -335,7 +305,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             var query = @"
                {
-                    testString (){}
+                    testString
                 }
             ";
 

@@ -168,7 +168,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             var query = @"
                 mutation Test{
-                    testRequest (clear:true){}
+                    testRequest (clear:true)
                 }
             ";
 

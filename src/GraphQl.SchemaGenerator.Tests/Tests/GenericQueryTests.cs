@@ -14,7 +14,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var schema = schemaGenerator.CreateSchema(typeof(GenericsSchema));
 
             var query = @"
-                echoGenerics {
+                {
                     echoGenerics{data}
                 }
             ";
@@ -35,7 +35,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var schema = schemaGenerator.CreateSchema(typeof(GenericsSchema));
 
             var query = @"
-                echoGenerics {
+                {
                     echoGenerics(
                         int1:{data:2}
                         string1:{data:""test""},

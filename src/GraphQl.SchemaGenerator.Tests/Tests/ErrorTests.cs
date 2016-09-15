@@ -20,7 +20,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             {
                 e = er;
             }
-
+            //this should pass whenever the change is pushed.
             Assert.NotNull(e);
             Assert.Contains("SameRoute", e.Message);
         }
