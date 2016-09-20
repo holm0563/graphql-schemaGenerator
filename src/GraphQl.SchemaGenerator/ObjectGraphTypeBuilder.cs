@@ -151,7 +151,7 @@ namespace GraphQL.SchemaGenerator
                 instanceParam).Compile();
         }
 
-        private static void ProcessProperties(GraphType graphType, IEnumerable<PropertyInfo> properties, bool isInputType = false)
+        private static void ProcessProperties(IComplexGraphType graphType, IEnumerable<PropertyInfo> properties, bool isInputType = false)
         {
             foreach (var property in properties.OrderBy(p => p.Name))
             {
@@ -169,17 +169,18 @@ namespace GraphQL.SchemaGenerator
                 }
 
                 var name = StringHelper.GraphName(property.Name);
-                var field = graphType.Field(
-                    propertyGraphType,
-                    name,
-                    TypeHelper.GetDescription(property));
+                var field = graphType.AddField(new FieldType {
+                    Type=propertyGraphType,
+                    Name = name,
+                    Description = TypeHelper.GetDescription(property)
+                });
 
                 field.DefaultValue = TypeHelper.GetDefaultValue(property);
                 field.DeprecationReason = TypeHelper.GetDeprecationReason(property);
             }
         }
 
-        private static void ProcessFields(GraphType graphType, IEnumerable<FieldInfo> fields)
+        private static void ProcessFields(IComplexGraphType graphType, IEnumerable<FieldInfo> fields)
         {
             foreach (var field in fields.OrderBy(f => f.Name))
             {
@@ -196,13 +197,14 @@ namespace GraphQL.SchemaGenerator
                     fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, isNotNull);
                 }
 
-                graphType.Field(                
-                    fieldGraphType,
-                    StringHelper.GraphName(field.Name));
+                graphType.AddField(new FieldType { 
+                    Type = fieldGraphType,
+                    Name = StringHelper.GraphName(field.Name)
+                });
             }
         }
 
-        private static void ProcessMethods(GraphType graphType, Type type, IEnumerable<MethodInfo> methods)
+        private static void ProcessMethods(IComplexGraphType graphType, Type type, IEnumerable<MethodInfo> methods)
         {
             if (!typeof(GraphType).IsAssignableFrom(type) &&
                 !type.IsDefined(typeof(GraphTypeAttribute)))
@@ -229,14 +231,18 @@ namespace GraphQL.SchemaGenerator
                     methodGraphType = GraphTypeConverter.ConvertTypeToGraphType(method.ReturnType, isNotNull);
                 }
 
-                graphType.Field(
-                    methodGraphType,
-                    StringHelper.GraphName(method.Name),
-                    null,
-                    new QueryArguments(method.GetParameters().Where(p => p.ParameterType != typeof(ResolveFieldContext)).Select(p => CreateArgument(p))),
-                    // todo: need to fix method execution - not called currently so lower priority
-                    c => method.Invoke(Activator.CreateInstance(type), GetArguments(method, c))
-                );
+                var arguments =
+                    new QueryArguments(
+                        method.GetParameters()
+                            .Where(p => p.ParameterType != typeof(ResolveFieldContext))
+                            .Select(CreateArgument));
+
+                // todo: need to fix method execution - not called currently so lower priority
+                graphType.AddField(new FieldType { 
+                    Type = methodGraphType,
+                    Name = StringHelper.GraphName(method.Name),
+                    Arguments = arguments
+                });
             }
         }
 
@@ -248,28 +254,6 @@ namespace GraphQL.SchemaGenerator
             }
 
             return methodGraphType;
-        }
-
-        private static object[] GetArguments(MethodInfo method, ResolveFieldContext context)
-        {
-            var list = new List<object>();
-
-            foreach (var param in method.GetParameters())
-            {
-                if (param.ParameterType == typeof(ResolveFieldContext))
-                {
-                    list.Add(context);
-                    continue;
-                }
-
-                object value;
-                if (context.Arguments.TryGetValue(param.Name, out value))
-                {
-                    list.Add(value);
-                }
-            }
-
-            return list.ToArray();
         }
 
         public static bool IsSpecialMethod(MethodInfo method)

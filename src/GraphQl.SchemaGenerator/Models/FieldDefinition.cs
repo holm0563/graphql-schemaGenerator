@@ -16,9 +16,9 @@ namespace GraphQL.SchemaGenerator.Models
         /// <summary>
         ///     Resolve function to get the object.
         /// </summary>
-        public Func<ResolveFieldContext, object> Resolve { get; }
+        public Func<ResolveFieldContext<object>, object> Resolve { get; }
 
-        public FieldDefinition(FieldInformation field, Func<ResolveFieldContext, object> resolve)
+        public FieldDefinition(FieldInformation field, Func<ResolveFieldContext<object>, object> resolve)
         {
             Field = field;
             Resolve = resolve;

@@ -17,7 +17,7 @@ namespace GraphQL.SchemaGenerator.Extensions
         /// <param name="type">Extension.</param>
         /// <param name="field">Field information.</param>
         /// <returns></returns>
-        public static object[] Parameters(this ResolveFieldContext type, FieldInformation field)
+        public static object[] Parameters(this ResolveFieldContext<object> type, FieldInformation field)
         {
             if (field == null)
             {

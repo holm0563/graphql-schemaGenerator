@@ -14,3 +14,5 @@ TestResults/
 packages/
 node_modules/
 nuget/lib
+/src/GraphQL/project.lock.json
+/src/GraphQL.Tests/project.lock.json

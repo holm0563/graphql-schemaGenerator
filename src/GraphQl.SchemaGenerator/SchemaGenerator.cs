@@ -89,7 +89,7 @@ namespace GraphQL.SchemaGenerator
         /// <summary>
         ///     Resolve the value from a field.
         /// </summary>
-        public object ResolveField(ResolveFieldContext context, FieldInformation field)
+        public object ResolveField(ResolveFieldContext<object> context, FieldInformation field)
         {
             var classObject = ServiceProvider.GetService(field.Method.DeclaringType);
             var parameters = context.Parameters(field);
