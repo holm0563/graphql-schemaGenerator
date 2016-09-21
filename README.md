@@ -1,199 +1,82 @@
-# GraphQL for .NET
+# Schema Generator - GraphQL for .NET
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/graphql-dotnet/graphql-dotnet?branch=master&svg=true)](https://ci.appveyor.com/project/graphql-dotnet-ci/graphql-dotnet)
-[![Join the chat at https://gitter.im/graphql-dotnet/graphql-dotnet](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/graphql-dotnet/graphql-dotnet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-This is a work-in-progress implementation of [Facebook's GraphQL](https://github.com/facebook/graphql) in .NET.
-
-This project uses [Antlr4](https://github.com/tunnelvisionlabs/antlr4cs) for the GraphQL grammar definition.
+This uses [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet) and wraps it to easily generate a graph ql schema based on c# models. The shema generator will automatically create a schema on existing c# models. This includes every response model, request model, and composed classes in these models. This can save a lot of time with an existing SDK or API project that is adding graph ql support.
 
 ## Installation
 
-You can install the latest version via [NuGet](https://www.nuget.org/packages/GraphQL/).
+*Todo
 
-`PM> Install-Package GraphQL`
+## Configuration
 
-## Upgrade Guide
-
-0.8.0 - [upgrade guide](/upgrade-guides/v0.8.0.md)
-
-## GraphiQL
-There is a sample web api project hosting the GraphiQL interface.  `npm install` and build `webpack` from the root of the repository.
+Define your routes with the GraphRoute attribute:
 
 ```
-> npm install
-> npm start
-```
-![](http://i.imgur.com/2uGdVAj.png)
-
-## Usage
-
-Define your type system with a top level query object.
-
-```csharp
-public class StarWarsSchema : Schema
+/// <summary>
+///     An example of the sdk that could be exposed. This is decorated with attributes to self generate a graph schema. 
+/// </summary>
+public class StarWarsAttributeSchema
 {
-  public StarWarsSchema()
-  {
-    Query = new StarWarsQuery();
-  }
-}
+    private readonly StarWarsData _data = new StarWarsData();
 
-public class StarWarsQuery : ObjectGraphType
-{
-  public StarWarsQuery()
-  {
-    var data = new StarWarsData();
-    Name = "Query";
-    Field<CharacterInterface>(
-      "hero",
-      resolve: context => data.GetDroidById("3")
-    );
-  }
-}
+    /// <summary>
+    ///     Get the current hero.
+    /// </summary>
+    /// <remarks>
+    ///     Example of graph ql attribute using the defaults.
+    /// </remarks>
+    /// <returns>Droid.</returns>
+    [GraphRoute]
+    public Droid Hero()
+    {
+        var item = _data.GetDroidByIdAsync("3").Result;
 
-public class CharacterInterface : InterfaceGraphType
-{
-  public CharacterInterface()
-  {
-    Name = "Character";
-    Field<NonNullGraphType<StringGraphType>>("id", "The id of the character.");
-    Field<NonNullGraphType<StringGraphType>>("name", "The name of the character.");
-    Field<ListGraphType<CharacterInterface>>("friends");
-  }
-}
-
-public class DroidType : ObjectGraphType
-{
-  public DroidType()
-  {
-    var data = new StarWarsData();
-    Name = "Droid";
-    Field<NonNullGraphType<StringGraphType>>("id", "The id of the droid.");
-    Field<NonNullGraphType<StringGraphType>>("name", "The name of the droid.");
-    Field<ListGraphType<CharacterInterface>>(
-        "friends",
-        resolve: context => data.GetFriends(context.Source as StarWarsCharacter)
-    );
-    Interface<CharacterInterface>();
-    IsTypeOf = value => value is Droid;
-  }
-}
-```
-
-Executing a query.
-
-```csharp
-public string Execute(
-  Schema schema,
-  object rootObject,
-  string query,
-  string operationName = null,
-  Inputs inputs = null)
-{
-  var executer = new DocumentExecuter();
-  var writer = new DocumentWriter();
-
-  var result = executer.Execute(schema, rootObject, query, operationName, inputs);
-  return writer.Write(result);
-}
-
-var schema = new StarWarsSchema();
-
-var query = @"
-  query HeroNameQuery {
-    hero {
-      name
+        return item;
     }
-  }
-";
-
-var result = Execute(schema, null, query);
-
-Console.Writeline(result);
-
-// prints
-{
-  "data": {
-    "hero": {
-      "name": "R2-D2"
-    }
-  }
 }
+```
+
+## Example Usage
+
+```
+
+IServiceProvider provider = new MockServiceProvider(); //Resolves your classes
+var schemaGenerator = new SchemaGenerator(provider);
+//See the readme.md in the schema generator project for more details on what this is doing.
+var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
+
+//Standard graph ql execution
+ var query = @"
+                query HeroNameQuery {
+                  hero {
+                    name
+                  }
+                }
+            ";
+var exec = new DocumentExecuter(new AntlrDocumentBuilder(), new DocumentValidator());
+var result = exec.ExecuteAsync(schema, null, query, null).Result;
+
 ```
 
 ## Roadmap
 
-### Grammar / AST
-- Grammar and AST for the GraphQL language should be complete.
+### Supported Data Types
+- [x] Enums
+- [x] Dictionaries
+- [x] IEnumerable
+- [x] DateTime, DateTimeOffset
+- [x] Timespan
+- [x] Byte Array
+- [x] Key value pair
 
-### Operation Execution
-- [x] Scalars
-- [x] Objects
-- [x] Lists of objects/interfaces
-- [x] Interfaces
-- [x] Arguments
-- [x] Variables
-- [x] Fragments
-- [x] Directives
+### Supported Conversions
+- [x] Mutations
+- [x] Queries
+- [ ] Interfaces
+- [x] Descriptions (via description attribute)
+- [ ] Descriptions (via summary text)
 - [x] Enumerations
 - [x] Input Objects
 - [x] Mutations
-- [x] Unions
-- [x] Async execution
+- [ ] Unions
+- [ ] Async execution
 
-### Validation
-- [x] Arguments of correct type
-- [x] Default values of correct type
-- [ ] Fields on correct type
-- [ ] Fragments on composite type
-- [x] Known argument names
-- [ ] Known directives
-- [ ] Known fragment names
-- [x] Known type names
-- [x] Lone anonymous operations
-- [ ] No fragment cycle
-- [x] No undefined variables
-- [ ] No unused fragments
-- [ ] No unused variables
-- [ ] Overlapping fields can be merged
-- [ ] Possible fragment spreads
-- [ ] Provide non-null arguments
-- [x] Scalar leafs
-- [ ] Unique argument names
-- [ ] Unique fragment names
-- [x] Unique input field names
-- [x] Unique operation names
-- [ ] Unique variable names
-- [x] Variables are input types
-- [x] Variables in allowed position
-
-### Schema Introspection
-- [x] __typename
-- [x] __type
-  - [x] name
-  - [x] kind
-  - [x] description
-  - [x] fields
-  - [x] interfaces
-  - [x] possibleTypes
-  - [x] enumValues
-  - [x] inputFields
-  - [x] ofType
-- [x] __schema
-  - [x] types
-  - [x] queryType
-  - [x] mutationType
-  - [ ] subscriptionType
-  - [x] directives
-
-### Deployment Process
-
-```
-npm run setVersion 0.10.0
-write release notes in release-notes.md
-git commit/push
-download nuget from AppVeyor
-upload nuget package to github
-upload nuget package to nuget.org
-```
