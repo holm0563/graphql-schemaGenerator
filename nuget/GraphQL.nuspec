@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>GraphQL Schema Generator</id>
-    <version>0.1.0.1</version>
+    <id>Navitaire.GraphQL.SchemaGenerator</id>
+    <version>0.1.0.1-alpha</version>
     <authors>Derek Holmes</authors>
     <owners>Derek Holmes</owners>
     <licenseUrl>https://raw.githubusercontent.com/holm0563/graphql-schemaGenerator/AsReference/LICENSE.md</licenseUrl>
