@@ -113,7 +113,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var query = @"{
                 __type(name:""Input_SetRequest""){
                         name
-                        fields{
+                        inputFields{
                             name
                             type{
                                 kind
@@ -129,7 +129,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var expected = @"{
               __type: {
                 name: ""Input_SetRequest"",
-                fields: [
+                inputFields: [
                   {
                     name: ""data"",
                     type: {
