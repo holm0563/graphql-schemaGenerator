@@ -6,7 +6,7 @@
     <authors>Derek Holmes</authors>
     <owners>Derek Holmes</owners>
     <licenseUrl>https://raw.githubusercontent.com/holm0563/graphql-schemaGenerator/AsReference/LICENSE.md</licenseUrl>
-    <projectUrl>https://github.com/graphql-dotnet/graphql-dotnet</projectUrl>
+    <projectUrl>https://github.com/holm0563/graphql-schemaGenerator</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Generate graph ql queries and schemas easily from dot net models.</description>
     <releaseNotes><![CDATA[]]></releaseNotes>
