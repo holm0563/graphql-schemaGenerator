@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>GraphQL</id>
-    <version>0.9.3.0</version>
-    <authors>Joseph T. McBride</authors>
-    <owners>Joseph T. McBride</owners>
-    <licenseUrl>https://github.com/graphql-dotnet/graphql-dotnet/blob/master/LICENSE.md</licenseUrl>
+    <id>GraphQL Schema Generator</id>
+    <version>0.1.0.1</version>
+    <authors>Derek Holmes</authors>
+    <owners>Derek Holmes</owners>
+    <licenseUrl>https://raw.githubusercontent.com/holm0563/graphql-schemaGenerator/AsReference/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/graphql-dotnet/graphql-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>GraphQL for .NET</description>
+    <description>Generate graph ql queries and schemas easily from dot net models.</description>
     <releaseNotes><![CDATA[]]></releaseNotes>
     <tags>GraphQL json api</tags>
   </metadata>
