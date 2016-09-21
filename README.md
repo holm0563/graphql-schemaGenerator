@@ -79,5 +79,6 @@ var result = exec.ExecuteAsync(schema, null, query, null).Result;
 - [x] Mutations
 - [ ] Unions
 - [ ] Async execution
+- [ ] Methods converting to inner queries
 - Void return types are not supported, doesn't make sense per the graph spec.
 
