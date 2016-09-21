@@ -24,7 +24,6 @@ namespace GraphQL.SchemaGenerator
             ISchema schema,
             object root,
             string query,
-            string operationName,
             Inputs inputs = null,
             CancellationToken cancellationToken = default(CancellationToken),
             IEnumerable<IValidationRule> rules = null)
