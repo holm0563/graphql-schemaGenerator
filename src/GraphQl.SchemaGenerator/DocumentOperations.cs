@@ -16,6 +16,8 @@ namespace GraphQL.SchemaGenerator
     /// </summary>
     public static class DocumentOperations
     {
+        static SemaphoreSlim semaphore = new SemaphoreSlim(1,1);
+
         /// <summary>
         ///     Execute all operations async.
         /// </summary>
@@ -50,17 +52,27 @@ namespace GraphQL.SchemaGenerator
 
                 if (validationResult.IsValid)
                 {
-                    foreach (var operation in savedDocument.Document.Operations)
+                    await semaphore.WaitAsync();
+                    try
                     {
-                        var opResult = await nonValidatedExecutionar.ExecuteAsync(schema, root, query, operation.Name, inputs,
-                            cancellationToken, rules);
 
-                        if (opResult.Errors != null && opResult.Errors.Any())
+                        foreach (var operation in savedDocument.Document.Operations)
                         {
-                            return opResult;
-                        }
+                            var opResult =
+                                await nonValidatedExecutionar.ExecuteAsync(schema, root, query, operation.Name, inputs,
+                                    cancellationToken, rules);
 
-                        aggregateData.Add(operation.Name, opResult.Data);
+                            if (opResult.Errors != null && opResult.Errors.Any())
+                            {
+                                return opResult;
+                            }
+
+                            aggregateData.Add(operation.Name, opResult.Data);
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
                     }
                 }
                 else
