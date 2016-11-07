@@ -93,11 +93,27 @@ namespace GraphQL.SchemaGenerator
         {
             var classObject = ServiceProvider.GetService(field.Method.DeclaringType);
             var parameters = context.Parameters(field);
-            var result = field.Method.Invoke(classObject, parameters);
 
-            //todo async support.
+            if (classObject == null)
+            {
+                throw new Exception($"Can't resolve class from: {field.Method.DeclaringType}");
+            }
 
-            return result;
+            try
+            {
+
+                var result = field.Method.Invoke(classObject, parameters);
+
+                //todo async support.
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var stringParams = parameters?.ToList().Select(t => String.Concat(t.ToString(), ":"));
+
+                throw new Exception($"Cant invoke {field.Method.DeclaringType} with parameters {stringParams}", ex);
+            }
         }
 
         /// <summary>
