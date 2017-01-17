@@ -7,6 +7,7 @@ using GraphQL.Execution;
 using GraphQL.Language.AST;
 using GraphQL.Types;
 using GraphQL.Validation;
+using GraphQL.Validation.Complexity;
 
 namespace GraphQL.SchemaGenerator
 {
@@ -28,18 +29,22 @@ namespace GraphQL.SchemaGenerator
             IEnumerable<IValidationRule> rules = null)
         {
             var savedDocument = new SavedDocumentBuilder(query);
+            var analyzer = new ComplexityAnalyzer();
 
             if ((savedDocument.Document.Operations == null) || (savedDocument.Document.Operations.Count() <= 1))
             {
                 //run the typical way.
-                var defaultBuilder = new DocumentExecuter(savedDocument, new DocumentValidator());
+                var defaultBuilder = new DocumentExecuter(savedDocument, new DocumentValidator(), analyzer);
 
-                return await defaultBuilder.ExecuteAsync(schema, root, query, null, inputs, cancellationToken, rules);
+                return
+                    await
+                        defaultBuilder.ExecuteAsync(schema, root, query, null, inputs, rules: rules,
+                            cancellationToken: cancellationToken);
             }
 
             var validator = new DocumentValidator();
             var result = new ExecutionResult();
-            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, new ValidValidator());
+            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, new ValidValidator(), analyzer);
             var aggregateData = new Dictionary<string, object>();
 
             try
@@ -52,7 +57,7 @@ namespace GraphQL.SchemaGenerator
                     {
                         var opResult =
                             await nonValidatedExecutionar.ExecuteAsync(schema, root, query, operation.Name, inputs,
-                                cancellationToken, rules);
+                                rules: rules, cancellationToken: cancellationToken);
 
                         if ((opResult.Errors != null) && opResult.Errors.Any())
                             return opResult;
@@ -69,9 +74,7 @@ namespace GraphQL.SchemaGenerator
             catch (Exception exc)
             {
                 if (result.Errors == null)
-                {
                     result.Errors = new ExecutionErrors();
-                }
 
                 result.Data = null;
                 result.Errors.Add(new ExecutionError(exc.Message, exc));
@@ -90,7 +93,8 @@ namespace GraphQL.SchemaGenerator
     public class ValidValidator : IDocumentValidator
     {
         public IValidationResult Validate(string originalQuery, ISchema schema, Document document,
-            IEnumerable<IValidationRule> rules = null)
+            IEnumerable<IValidationRule> rules = null,
+            object userContext = null)
         {
             return new ValidationResult();
         }

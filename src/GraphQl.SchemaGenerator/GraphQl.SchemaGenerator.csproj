@@ -31,12 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphQL, Version=0.12.0.538, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL.0.12.0-alpha-538\lib\net452\GraphQL.dll</HintPath>
+    <Reference Include="GraphQL, Version=0.14.4.649, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL.0.14.4.649\lib\net45\GraphQL.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GraphQLParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL-Parser.1.0.0\lib\net452\GraphQLParser.dll</HintPath>
+    <Reference Include="GraphQL-Parser, Version=2.0.0.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL-Parser.2.0.0\lib\net45\GraphQL-Parser.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -79,6 +79,7 @@
     <Compile Include="Schema\IDomainSchemaTypeMapping.cs" />
     <Compile Include="Schema\ISchemaFactory.cs" />
     <Compile Include="Schema\SchemaBuilder.cs" />
+    <Compile Include="Types\OriginalDateGraphType.cs" />
     <Compile Include="Types\TimeSpanGraphType.cs" />
     <Compile Include="Wrappers\ByteArrayGraphType.cs" />
     <Compile Include="Wrappers\EnumerationGraphTypeWrapper.cs" />
