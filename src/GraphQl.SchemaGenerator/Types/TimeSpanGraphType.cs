@@ -31,7 +31,7 @@ namespace GraphQL.SchemaGenerator.Types
         /// <returns></returns>
         public override object Serialize(object value)
         {
-            return ParseValue(value);
+            return ParseValue(value).ToString();
         }
 
         /// <summary>

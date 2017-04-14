@@ -10,10 +10,10 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
 {
     public static class GraphAssert
     {
-        public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected)
+        public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null)
         {
             var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator());
-            var result = exec.ExecuteAsync(schema, null, query, null).Result;
+            var result = exec.ExecuteAsync(schema, null, query, null, variables?.ToInputs()).Result;
 
             var writtenResult = JsonConvert.SerializeObject(result.Data);
             var queryResult = CreateQueryResult(expected);

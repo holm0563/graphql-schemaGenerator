@@ -21,7 +21,9 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
 
         public DateTime? Y2k { get; } = new DateTime(2000, 1, 1);
 
-        public DateTime? Y2kUtc { get; } = new DateTime(2000,1,1).ToUniversalTime();
+        public DateTime? Y2kUtc { get; } = new DateTime(2000,1,1,0,0,0, DateTimeKind.Utc);
+
+        public TimeSpan? TimeSpan { get; set; } = new TimeSpan(0,1,1,1);
 
     }
 }

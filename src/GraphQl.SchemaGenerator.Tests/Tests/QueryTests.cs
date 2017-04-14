@@ -195,7 +195,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                 }";
 
             var expected = @"{
-              testRequest: {date:""1999-01-01T07:00:00Z""}
+              testRequest: {date:""1999-01-01T00:00:00-07:00""}
                 }";
 
             GraphAssert.QuerySuccess(schema, query, expected);
