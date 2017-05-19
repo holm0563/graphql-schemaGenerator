@@ -55,7 +55,7 @@ namespace GraphQL.SchemaGenerator
             ProcessType(graphType, type);
             bool hasDataContract = type.ShouldIncludeInGraph();
             ProcessProperties(graphType, GetProperties(hasDataContract, type), true);
-            ProcessFields(graphType, GetFields(hasDataContract, type));
+            ProcessFields(graphType, GetFields(hasDataContract, type), true);
             ProcessMethods(graphType, type, type.GetMethods());
         }
 
@@ -180,7 +180,7 @@ namespace GraphQL.SchemaGenerator
             }
         }
 
-        private static void ProcessFields(IComplexGraphType graphType, IEnumerable<FieldInfo> fields)
+        private static void ProcessFields(IComplexGraphType graphType, IEnumerable<FieldInfo> fields, bool isInputType = false)
         {
             foreach (var field in fields.OrderBy(f => f.Name))
             {
@@ -189,12 +189,12 @@ namespace GraphQL.SchemaGenerator
                 var fieldGraphType = TypeHelper.GetGraphType(field);
                 if (fieldGraphType != null)
                 {
-                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(fieldGraphType, isNotNull);
+                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(fieldGraphType, isNotNull, isInputType);
                     fieldGraphType = EnsureList(field.FieldType, fieldGraphType);
                 }
                 else
                 {
-                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, isNotNull);
+                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, isNotNull, isInputType);
                 }
 
                 graphType.AddField(new FieldType { 

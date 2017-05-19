@@ -90,6 +90,23 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
         }
 
         [Fact]
+        public void WithDictionaryParameterExample_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(DictionarySchema));
+
+            var query = @"{
+                  dictionaryRequest(request:{dictionary:[{key:""name"", value:""bob""}]}) {key,value}
+                }";
+
+            var expected = @"{
+              dictionaryRequest: [{""key"":""name"",""value"":""bob""}]
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
         public void WithStringEscapedParameterExample_Works()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());

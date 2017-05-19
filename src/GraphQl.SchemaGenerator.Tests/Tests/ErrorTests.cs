@@ -7,7 +7,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 {
     public class ErrorTests
     {
-        [Fact]
+        [Fact(Skip = "This change was not made in the open source community")]
         public void Duplicate_Name_Throws()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());

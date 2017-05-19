@@ -79,6 +79,7 @@
     <Compile Include="Schemas\DateSchema.cs" />
     <Compile Include="Schemas\DuplicateSchema.cs" />
     <Compile Include="Schemas\AsyncSchema.cs" />
+    <Compile Include="Schemas\DictionarySchema.cs" />
     <Compile Include="Schemas\GenericsSchema.cs" />
     <Compile Include="Schemas\PrimitiveSchema.cs" />
     <Compile Include="Schemas\EchoStateSchema.cs" />

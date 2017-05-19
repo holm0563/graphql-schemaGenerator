@@ -44,8 +44,16 @@ namespace GraphQL.SchemaGenerator.Extensions
                     typeof(IEnumerable<object>).IsAssignableFrom(arg.GetType())
                     )
                 {
-                    var json = JsonConvert.SerializeObject(arg);
-                    arg = JsonConvert.DeserializeObject(json, parameter.ParameterType);
+                    try
+                    {
+                        var json = JsonConvert.SerializeObject(arg);
+                        arg = JsonConvert.DeserializeObject(json, parameter.ParameterType);
+                    }
+                    catch
+                    {
+                        var json = JsonConvert.SerializeObject(arg, new DeepDictionaryRequest());
+                        arg = JsonConvert.DeserializeObject(json, parameter.ParameterType);
+                    }
                 }
                 else if (parameter.ParameterType == typeof(char))
                 {
