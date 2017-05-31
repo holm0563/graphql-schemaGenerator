@@ -197,10 +197,13 @@ namespace GraphQL.SchemaGenerator
                     fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, isNotNull, isInputType);
                 }
 
-                graphType.AddField(new FieldType { 
+                var addedField = graphType.AddField(new FieldType { 
                     Type = fieldGraphType,
                     Name = StringHelper.GraphName(field.Name)
                 });
+
+                addedField.DeprecationReason = TypeHelper.GetDeprecationReason(field);
+
             }
         }
 
@@ -241,7 +244,8 @@ namespace GraphQL.SchemaGenerator
                 graphType.AddField(new FieldType { 
                     Type = methodGraphType,
                     Name = StringHelper.GraphName(method.Name),
-                    Arguments = arguments
+                    Arguments = arguments,
+                    DeprecationReason = TypeHelper.GetDeprecationReason(method)
                 });
             }
         }

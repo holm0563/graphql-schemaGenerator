@@ -118,17 +118,24 @@ namespace GraphQL.SchemaGenerator.Helpers
         public static string GetDeprecationReason(PropertyInfo property)
         {
             var obsoleteAttr = property.GetCustomAttribute<ObsoleteAttribute>();
-            return getObsoleteMessage(obsoleteAttr);
+            return GetObsoleteMessage(obsoleteAttr);
         }
 
-        private static string getObsoleteMessage(ObsoleteAttribute obsoleteAttr)
+        public static string GetDeprecationReason(FieldInfo field)
         {
-            if (obsoleteAttr != null)
-            {
-                return obsoleteAttr.Message;
-            }
+            var obsoleteAttr = field.GetCustomAttribute<ObsoleteAttribute>();
+            return GetObsoleteMessage(obsoleteAttr);
+        }
 
-            return String.Empty;
+        public static string GetDeprecationReason(MethodInfo method)
+        {
+            var obsoleteAttr = method.GetCustomAttribute<ObsoleteAttribute>();
+            return GetObsoleteMessage(obsoleteAttr);
+        }
+
+        private static string GetObsoleteMessage(ObsoleteAttribute obsoleteAttr)
+        {
+                return obsoleteAttr?.Message;
         }
 
         public static object GetDefaultValue(PropertyInfo property)

@@ -33,5 +33,10 @@ namespace GraphQL.SchemaGenerator.Models
         ///     The method information this field is defined from.
         /// </summary>
         public MethodInfo Method { get; set; }
+
+        /// <summary>
+        ///     The obsolete attribute message if any.
+        /// </summary>
+        public string ObsoleteReason { get; set; }
     }
 }

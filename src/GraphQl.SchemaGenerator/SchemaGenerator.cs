@@ -7,7 +7,6 @@ using GraphQL.SchemaGenerator.Attributes;
 using GraphQL.SchemaGenerator.Extensions;
 using GraphQL.SchemaGenerator.Helpers;
 using GraphQL.SchemaGenerator.Models;
-using GraphQL.SchemaGenerator.Wrappers;
 using GraphQL.Types;
 
 namespace GraphQL.SchemaGenerator
@@ -17,25 +16,6 @@ namespace GraphQL.SchemaGenerator
     /// </summary>
     public class SchemaGenerator
     {
-        #region Dependencies
-
-        private IServiceProvider ServiceProvider { get; }
-        private IGraphTypeResolver TypeResolver { get; }
-
-        public SchemaGenerator(IServiceProvider serviceProvider, IGraphTypeResolver typeResolver)
-        {
-            ServiceProvider = serviceProvider;
-            TypeResolver = typeResolver;
-        }
-
-        public SchemaGenerator(IServiceProvider serviceProvider)
-        {
-            ServiceProvider = serviceProvider;
-            TypeResolver = new GraphTypeResolver();
-        }
-
-        #endregion
-
         /// <summary>
         ///     Create field definitions based off a type.
         /// </summary>
@@ -46,41 +26,38 @@ namespace GraphQL.SchemaGenerator
             var definitions = new List<FieldDefinition>();
 
             foreach (var type in types)
+            foreach (var method in type.GetMethods())
             {
-                foreach (var method in type.GetMethods())
+                var graphRoute = method.GetCustomAttributes(typeof(GraphRouteAttribute), true)
+                    .OfType<GraphRouteAttribute>()
+                    .FirstOrDefault();
+
+                if (graphRoute == null)
+                    continue;
+
+                var parameters = method.GetParameters();
+                var arguments = CreateArguments(parameters);
+                var response = method.ReturnType;
+
+                if (response.IsGenericType && response.GetGenericTypeDefinition() == typeof(Task<>))
+                    response = response.GenericTypeArguments.First();
+
+                var field = new FieldInformation
                 {
-                    var graphRoute = method.GetCustomAttributes(typeof(GraphRouteAttribute), true)
-                        .OfType<GraphRouteAttribute>()
-                        .FirstOrDefault();
+                    IsMutation = graphRoute.IsMutation,
+                    Arguments = arguments,
+                    Name =
+                        !string.IsNullOrWhiteSpace(graphRoute.Name)
+                            ? graphRoute.Name
+                            : StringHelper.ConvertToCamelCase(method.Name),
+                    Response = response,
+                    Method = method,
+                    ObsoleteReason = TypeHelper.GetDeprecationReason(method)
+                };
 
-                    if (graphRoute == null)
-                    {
-                        continue;
-                    }
+                var definition = new FieldDefinition(field, context => ResolveField(context, field));
 
-                    var parameters = method.GetParameters();
-                    var arguments = CreateArguments(parameters);
-                    var response = method.ReturnType;
-
-                    if (response.IsGenericType && response.GetGenericTypeDefinition() == typeof(Task<>))
-                    {
-                        response = response.GenericTypeArguments.First();
-                    }
-
-                    var field = new FieldInformation
-                    {
-                        IsMutation = graphRoute.IsMutation,
-                        Arguments = arguments,
-                        Name =
-                            !String.IsNullOrWhiteSpace(graphRoute.Name)
-                                ? graphRoute.Name
-                                : StringHelper.ConvertToCamelCase(method.Name),
-                        Response = response,
-                        Method = method
-                    };
-
-                    definitions.Add(new FieldDefinition(field, (context) => ResolveField(context, field)));
-                }
+                definitions.Add(definition);
             }
 
             return definitions;
@@ -95,13 +72,10 @@ namespace GraphQL.SchemaGenerator
             var parameters = context.Parameters(field);
 
             if (classObject == null)
-            {
                 throw new Exception($"Can't resolve class from: {field.Method.DeclaringType}");
-            }
 
             try
             {
-
                 var result = field.Method.Invoke(classObject, parameters);
 
                 //todo async support.
@@ -110,7 +84,7 @@ namespace GraphQL.SchemaGenerator
             }
             catch (Exception ex)
             {
-                var stringParams = parameters?.ToList().Select(t => String.Concat(t.ToString(), ":"));
+                var stringParams = parameters?.ToList().Select(t => string.Concat(t.ToString(), ":"));
 
                 throw new Exception($"Cant invoke {field.Method.DeclaringType} with parameters {stringParams}", ex);
             }
@@ -144,30 +118,26 @@ namespace GraphQL.SchemaGenerator
             foreach (var definition in definitions)
             {
                 if (definition.Field == null)
-                {
                     continue;
-                }
 
                 var type = EnsureGraphType(definition.Field.Response);
 
                 if (definition.Field.IsMutation)
-                {
                     mutation.Field(
                         type,
                         definition.Field.Name,
-                        description: TypeHelper.GetDescription(definition.Field.Method),
-                        arguments: definition.Field.Arguments,
-                        resolve: definition.Resolve);
-                }
+                        TypeHelper.GetDescription(definition.Field.Method),
+                        definition.Field.Arguments,
+                        definition.Resolve,
+                        definition.Field.ObsoleteReason);
                 else
-                {
                     query.Field(
                         type,
                         definition.Field.Name,
-                        description: TypeHelper.GetDescription(definition.Field.Method),
-                        arguments: definition.Field.Arguments,
-                        resolve: definition.Resolve);
-                }
+                        TypeHelper.GetDescription(definition.Field.Method),
+                        definition.Field.Arguments,
+                        definition.Resolve,
+                        definition.Field.ObsoleteReason);
             }
 
             var schema = new GraphQL.Types.Schema(CreateGraphType)
@@ -195,22 +165,15 @@ namespace GraphQL.SchemaGenerator
         public static Type EnsureGraphType(Type parameterType)
         {
             if (parameterType == null || parameterType == typeof(void))
-            {
                 return typeof(StringGraphType);
-            }
 
             if (typeof(GraphType).IsAssignableFrom(parameterType))
-            {
                 return parameterType;
-            }
 
             var type = GraphTypeConverter.ConvertTypeToGraphType(parameterType);
 
             if (type == null)
-            {
-                //will allow a mutation or query with no return type
                 type = typeof(ScalarGraphType);
-            }
 
             return type;
         }
@@ -248,5 +211,24 @@ namespace GraphQL.SchemaGenerator
 
             return requestArgumentType;
         }
+
+        #region Dependencies
+
+        private IServiceProvider ServiceProvider { get; }
+        private IGraphTypeResolver TypeResolver { get; }
+
+        public SchemaGenerator(IServiceProvider serviceProvider, IGraphTypeResolver typeResolver)
+        {
+            ServiceProvider = serviceProvider;
+            TypeResolver = typeResolver;
+        }
+
+        public SchemaGenerator(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+            TypeResolver = new GraphTypeResolver();
+        }
+
+        #endregion
     }
 }
