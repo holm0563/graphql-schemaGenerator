@@ -31,13 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphQL, Version=0.14.4.649, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL.0.14.4.649\lib\net45\GraphQL.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GraphQL, Version=0.17.3.768, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL.0.17.3\lib\net45\GraphQL.dll</HintPath>
     </Reference>
-    <Reference Include="GraphQL-Parser, Version=2.0.0.17, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL-Parser.2.0.0\lib\net45\GraphQL-Parser.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GraphQL-Parser, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL-Parser.3.0.0\lib\net45\GraphQL-Parser.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>

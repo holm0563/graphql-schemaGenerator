@@ -5,6 +5,7 @@ using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
 using GraphQL.Validation;
+using GraphQL.Validation.Complexity;
 using Xunit;
 
 namespace GraphQL.SchemaGenerator.Tests.Tests
@@ -219,7 +220,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                       }
                 }";
 
-            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator());
+            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator(), new ComplexityAnalyzer());
             var result = exec.ExecuteAsync(schema, null, query, null).Result;
 
             var writer = new DocumentWriter(indent: true);

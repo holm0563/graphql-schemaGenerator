@@ -2,6 +2,7 @@
 using GraphQL.Execution;
 using GraphQL.Http;
 using GraphQL.Validation;
+using GraphQL.Validation.Complexity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -12,7 +13,7 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
     {
         public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null)
         {
-            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator());
+            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator(), new ComplexityAnalyzer());
             var result = exec.ExecuteAsync(schema, null, query, null, variables?.ToInputs()).Result;
 
             var writtenResult = JsonConvert.SerializeObject(result.Data);

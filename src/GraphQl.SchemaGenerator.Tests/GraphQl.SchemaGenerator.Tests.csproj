@@ -35,13 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphQL, Version=0.12.0.538, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL.0.12.0-alpha-538\lib\net452\GraphQL.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GraphQL, Version=0.17.3.768, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL.0.17.3\lib\net45\GraphQL.dll</HintPath>
     </Reference>
-    <Reference Include="GraphQLParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GraphQL-Parser.1.0.0\lib\net452\GraphQLParser.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GraphQL-Parser, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GraphQL-Parser.3.0.0\lib\net45\GraphQL-Parser.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -80,10 +78,12 @@
     <Compile Include="Schemas\DuplicateSchema.cs" />
     <Compile Include="Schemas\AsyncSchema.cs" />
     <Compile Include="Schemas\DictionarySchema.cs" />
+    <Compile Include="Schemas\PerformanceSchema.cs" />
     <Compile Include="Schemas\GenericsSchema.cs" />
     <Compile Include="Schemas\PrimitiveSchema.cs" />
     <Compile Include="Schemas\EchoStateSchema.cs" />
     <Compile Include="Schemas\EchoSchema.cs" />
+    <Compile Include="Tests\PerformanceTests.cs" />
     <Compile Include="Tests\ErrorTests.cs" />
     <Compile Include="Tests\MutationTests.cs" />
     <Compile Include="Tests\GenericQueryTests.cs" />
