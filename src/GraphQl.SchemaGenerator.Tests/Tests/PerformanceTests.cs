@@ -7,6 +7,7 @@ using GraphQL.SchemaGenerator.Tests.Schemas;
 using GraphQL.Validation;
 using GraphQL.Validation.Complexity;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GraphQL.SchemaGenerator.Tests.Tests
 {
@@ -44,13 +45,23 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             stopwatch.Start();
 
-            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator(), new ComplexityAnalyzer());
+            var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator(),
+                new ComplexityAnalyzer());
             var result = exec.ExecuteAsync(schema, null, query, null).Result;
 
             stopwatch.Stop();
 
+            _output.WriteLine($"Total Milliseconds: {stopwatch.ElapsedMilliseconds}");
+
             Assert.True(stopwatch.Elapsed.TotalSeconds < 1);
             Assert.Empty(result.Errors);
+        }
+
+        private readonly ITestOutputHelper _output;
+
+        public PerformanceTests(ITestOutputHelper output)
+        {
+            _output = output;
         }
     }
 }
