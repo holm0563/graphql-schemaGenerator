@@ -33,7 +33,8 @@ namespace GraphQL.SchemaGenerator
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
             var analyzer = new ComplexityAnalyzer();
-            var validator = validate ? (IDocumentValidator)new DocumentValidator() : new ValidValidator();
+            var validator = validate ? (IDocumentValidator)new DocumentValidator() :
+                ValidValidator.Instance;
 
             if ((savedDocument.Document.Operations == null) || (savedDocument.Document.Operations.Count() <= 1))
             {
@@ -47,7 +48,7 @@ namespace GraphQL.SchemaGenerator
             }
 
             var result = new ExecutionResult();
-            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, new ValidValidator(), analyzer);
+            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, ValidValidator.Instance, analyzer);
             var aggregateData = new Dictionary<string, object>();
 
             try
@@ -101,6 +102,8 @@ namespace GraphQL.SchemaGenerator
         {
             return new ValidationResult();
         }
+
+        public static ValidValidator Instance { get; } = new ValidValidator();
     }
 
     /// <summary>
