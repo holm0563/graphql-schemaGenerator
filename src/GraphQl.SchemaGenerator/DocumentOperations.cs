@@ -26,15 +26,19 @@ namespace GraphQL.SchemaGenerator
             string query,
             Inputs inputs = null,
             CancellationToken cancellationToken = default(CancellationToken),
-            IEnumerable<IValidationRule> rules = null)
+            IEnumerable<IValidationRule> rules = null,
+            bool validate = true,
+            IDocumentBuilder documentBuilder = null
+            )
         {
-            var savedDocument = new SavedDocumentBuilder(query);
+            var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
             var analyzer = new ComplexityAnalyzer();
+            var validator = validate ? (IDocumentValidator)new DocumentValidator() : new ValidValidator();
 
             if ((savedDocument.Document.Operations == null) || (savedDocument.Document.Operations.Count() <= 1))
             {
                 //run the typical way.
-                var defaultBuilder = new DocumentExecuter(savedDocument, new DocumentValidator(), analyzer);
+                var defaultBuilder = new DocumentExecuter(savedDocument, validator, analyzer);
 
                 return
                     await
@@ -42,7 +46,6 @@ namespace GraphQL.SchemaGenerator
                             cancellationToken: cancellationToken);
             }
 
-            var validator = new DocumentValidator();
             var result = new ExecutionResult();
             var nonValidatedExecutionar = new DocumentExecuter(savedDocument, new ValidValidator(), analyzer);
             var aggregateData = new Dictionary<string, object>();
@@ -105,13 +108,11 @@ namespace GraphQL.SchemaGenerator
     /// </summary>
     public class SavedDocumentBuilder : IDocumentBuilder
     {
-        public SavedDocumentBuilder(string query)
+        public SavedDocumentBuilder(string query, IDocumentBuilder builder)
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
+            builder = builder ?? new GraphQLDocumentBuilder();
 
-            var documentBuilder = new GraphQLDocumentBuilder();
-            Document = documentBuilder.Build(query);
+            Document = builder.Build(query);
         }
 
         /// <summary>
