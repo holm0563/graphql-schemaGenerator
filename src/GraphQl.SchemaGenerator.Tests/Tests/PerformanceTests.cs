@@ -53,7 +53,41 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             _output.WriteLine($"Total Milliseconds: {stopwatch.ElapsedMilliseconds}");
 
             Assert.True(stopwatch.Elapsed.TotalSeconds < 2);
-            Assert.Empty(result.Errors);
+            Assert.Null(result.Errors);
+        }
+
+        [Fact]
+        public async Task Methods_Perform_Async()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+
+            var schema = schemaGenerator.CreateSchema(typeof(PerformanceSchema));
+
+            var query = @"{
+                 slow1:slowCall{
+                    date                   
+                 }
+                 slow2:slowCall{
+                    date                   
+                 }
+                 slow3:slowCall{
+                    date                   
+                 }
+
+            }";
+
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            var result = await DocumentOperations.ExecuteOperationsAsync(schema, null, query, validate: false);
+
+            stopwatch.Stop();
+
+            _output.WriteLine($"Total Milliseconds: {stopwatch.ElapsedMilliseconds}");
+
+            Assert.True(stopwatch.Elapsed.TotalSeconds < 2);
+            Assert.Null(result.Errors);
         }
 
         private readonly ITestOutputHelper _output;

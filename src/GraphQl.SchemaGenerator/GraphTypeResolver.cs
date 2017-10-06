@@ -62,6 +62,16 @@ namespace GraphQL.SchemaGenerator
 
             return Activator.CreateInstance(generic) as GraphType;
         }
+
+        public T Resolve<T>()
+        {
+            return (T) Resolve(typeof(T));
+        }
+
+        public object Resolve(Type type)
+        {
+            return ResolveType(type);
+        }
     }
 }
 

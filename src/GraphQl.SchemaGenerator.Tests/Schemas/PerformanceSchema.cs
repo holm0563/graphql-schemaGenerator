@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using GraphQL.SchemaGenerator.Attributes;
 
 namespace GraphQL.SchemaGenerator.Tests.Schemas
@@ -24,6 +25,13 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
         public List<SchemaResponse> TestList()
         {
             return largeList;
+        }
+
+        [GraphRoute]
+        public List<SchemaResponse> SlowCall()
+        {
+            Thread.Sleep(1000);
+            return new List<SchemaResponse>();
         }
     }
 }

@@ -245,7 +245,8 @@ namespace GraphQL.SchemaGenerator
                     Type = methodGraphType,
                     Name = StringHelper.GraphName(method.Name),
                     Arguments = arguments,
-                    DeprecationReason = TypeHelper.GetDeprecationReason(method)
+                    DeprecationReason = TypeHelper.GetDeprecationReason(method),
+                    //Resolver = new AsyncFuncFieldResolver(()=>ResolveField(context, field))
                 });
             }
         }

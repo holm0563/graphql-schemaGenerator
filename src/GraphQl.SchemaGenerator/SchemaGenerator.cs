@@ -78,8 +78,6 @@ namespace GraphQL.SchemaGenerator
             {
                 var result = field.Method.Invoke(classObject, parameters);
 
-                //todo async support.
-
                 return result;
             }
             catch (Exception ex)
@@ -123,7 +121,7 @@ namespace GraphQL.SchemaGenerator
                 var type = EnsureGraphType(definition.Field.Response);
 
                 if (definition.Field.IsMutation)
-                    mutation.Field(
+                    mutation.FieldAsync(
                         type,
                         definition.Field.Name,
                         TypeHelper.GetDescription(definition.Field.Method),
@@ -131,7 +129,7 @@ namespace GraphQL.SchemaGenerator
                         definition.Resolve,
                         definition.Field.ObsoleteReason);
                 else
-                    query.Field(
+                    query.FieldAsync(
                         type,
                         definition.Field.Name,
                         TypeHelper.GetDescription(definition.Field.Method),
@@ -140,21 +138,13 @@ namespace GraphQL.SchemaGenerator
                         definition.Field.ObsoleteReason);
             }
 
-            var schema = new GraphQL.Types.Schema(CreateGraphType)
+            var schema = new GraphQL.Types.Schema(TypeResolver)
             {
                 Mutation = mutation.Fields.Any() ? mutation : null,
                 Query = query.Fields.Any() ? query : null
             };
 
             return schema;
-        }
-
-        /// <summary>
-        ///     Create a graph type based on the type. This is used to dynamically load types after schema creation.
-        /// </summary>
-        public GraphType CreateGraphType(Type type)
-        {
-            return TypeResolver.ResolveType(type);
         }
 
         /// <summary>

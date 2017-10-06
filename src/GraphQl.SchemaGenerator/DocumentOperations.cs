@@ -16,6 +16,8 @@ namespace GraphQL.SchemaGenerator
     /// </summary>
     public static class DocumentOperations
     {
+        private static ComplexityAnalyzer ComplexityAnalyzerInstance { get; } = new ComplexityAnalyzer();
+
         /// <summary>
         ///     Execute all operations async.
         /// </summary>
@@ -32,23 +34,32 @@ namespace GraphQL.SchemaGenerator
             )
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
-            var analyzer = new ComplexityAnalyzer();
             var validator = validate ? (IDocumentValidator)new DocumentValidator() :
                 ValidValidator.Instance;
 
             if ((savedDocument.Document.Operations == null) || (savedDocument.Document.Operations.Count() <= 1))
             {
                 //run the typical way.
-                var defaultBuilder = new DocumentExecuter(savedDocument, validator, analyzer);
+                var defaultBuilder = new DocumentExecuter(savedDocument, validator, ComplexityAnalyzerInstance);
 
                 return
                     await
-                        defaultBuilder.ExecuteAsync(schema, root, query, null, inputs, rules: rules,
-                            cancellationToken: cancellationToken);
+                        defaultBuilder.ExecuteAsync(
+                            new ExecutionOptions
+                            {
+                                Schema = schema,
+                                Root = root,
+                                Query = query,
+                                Inputs = inputs,
+                                CancellationToken = cancellationToken,
+                                ValidationRules = rules,
+                                EnableDocumentValidation = validate,
+                                EnableLogging = false
+                            });
             }
 
             var result = new ExecutionResult();
-            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, ValidValidator.Instance, analyzer);
+            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, ValidValidator.Instance, ComplexityAnalyzerInstance);
             var aggregateData = new Dictionary<string, object>();
 
             try
@@ -60,8 +71,17 @@ namespace GraphQL.SchemaGenerator
                     foreach (var operation in savedDocument.Document.Operations)
                     {
                         var opResult =
-                            await nonValidatedExecutionar.ExecuteAsync(schema, root, query, operation.Name, inputs,
-                                rules: rules, cancellationToken: cancellationToken);
+                            await nonValidatedExecutionar.ExecuteAsync(new ExecutionOptions
+                            {
+                                Schema = schema,
+                                Root = root,
+                                Query = query,
+                                Inputs = inputs,
+                                CancellationToken = cancellationToken,
+                                ValidationRules = rules,
+                                EnableDocumentValidation = validate,
+                                EnableLogging = false
+                            });
 
                         if ((opResult.Errors != null) && opResult.Errors.Any())
                             return opResult;
