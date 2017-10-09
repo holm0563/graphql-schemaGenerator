@@ -17,6 +17,7 @@ namespace GraphQL.SchemaGenerator
     public static class DocumentOperations
     {
         private static ComplexityAnalyzer ComplexityAnalyzerInstance { get; } = new ComplexityAnalyzer();
+        private static DocumentValidator DocumentValidator { get; } = new DocumentValidator();
 
         /// <summary>
         ///     Execute all operations async.
@@ -31,16 +32,14 @@ namespace GraphQL.SchemaGenerator
             IEnumerable<IValidationRule> rules = null,
             bool validate = true,
             IDocumentBuilder documentBuilder = null
-            )
+        )
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
-            var validator = validate ? (IDocumentValidator)new DocumentValidator() :
-                ValidValidator.Instance;
 
-            if ((savedDocument.Document.Operations == null) || (savedDocument.Document.Operations.Count() <= 1))
+            if (savedDocument.Document.Operations == null || savedDocument.Document.Operations.Count() <= 1)
             {
                 //run the typical way.
-                var defaultBuilder = new DocumentExecuter(savedDocument, validator, ComplexityAnalyzerInstance);
+                var defaultBuilder = new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance);
 
                 return
                     await
@@ -59,40 +58,44 @@ namespace GraphQL.SchemaGenerator
             }
 
             var result = new ExecutionResult();
-            var nonValidatedExecutionar = new DocumentExecuter(savedDocument, ValidValidator.Instance, ComplexityAnalyzerInstance);
+            var nonValidatedExecutionar =
+                new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance);
             var aggregateData = new Dictionary<string, object>();
 
             try
             {
-                var validationResult = validator.Validate(query, schema, savedDocument.Document, rules);
-
-                if (validationResult.IsValid)
+                if (validate)
                 {
-                    foreach (var operation in savedDocument.Document.Operations)
+                    var validationResult = DocumentValidator.Validate(query, schema, savedDocument.Document, rules);
+
+                    if (!validationResult.IsValid)
                     {
-                        var opResult =
-                            await nonValidatedExecutionar.ExecuteAsync(new ExecutionOptions
-                            {
-                                Schema = schema,
-                                Root = root,
-                                Query = query,
-                                Inputs = inputs,
-                                CancellationToken = cancellationToken,
-                                ValidationRules = rules,
-                                EnableDocumentValidation = validate,
-                                EnableLogging = false
-                            });
+                        result.Data = aggregateData;
+                        result.Errors = validationResult.Errors;
 
-                        if ((opResult.Errors != null) && opResult.Errors.Any())
-                            return opResult;
-
-                        aggregateData.Add(operation.Name, opResult.Data);
+                        return result;
                     }
                 }
-                else
+
+                foreach (var operation in savedDocument.Document.Operations)
                 {
-                    result.Data = null;
-                    result.Errors = validationResult.Errors;
+                    var opResult =
+                        await nonValidatedExecutionar.ExecuteAsync(new ExecutionOptions
+                        {
+                            Schema = schema,
+                            Root = root,
+                            Query = query,
+                            Inputs = inputs,
+                            CancellationToken = cancellationToken,
+                            ValidationRules = rules,
+                            EnableDocumentValidation = false,
+                            EnableLogging = false
+                        });
+
+                    if (opResult.Errors != null && opResult.Errors.Any())
+                        return opResult;
+
+                    aggregateData.Add(operation.Name, opResult.Data);
                 }
             }
             catch (Exception exc)
@@ -111,20 +114,6 @@ namespace GraphQL.SchemaGenerator
         }
     }
 
-    /// <summary>
-    ///     Skips validation and returns true.
-    /// </summary>
-    public class ValidValidator : IDocumentValidator
-    {
-        public IValidationResult Validate(string originalQuery, ISchema schema, Document document,
-            IEnumerable<IValidationRule> rules = null,
-            object userContext = null)
-        {
-            return new ValidationResult();
-        }
-
-        public static ValidValidator Instance { get; } = new ValidValidator();
-    }
 
     /// <summary>
     ///     Caches a saved document for reuse.
