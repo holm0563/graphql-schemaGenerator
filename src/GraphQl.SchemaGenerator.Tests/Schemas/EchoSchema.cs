@@ -16,7 +16,8 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             return new SchemaResponse
             {
                 Value = request?.Echo ?? 5,
-                StringValue = request?.Data
+                StringValue = request?.Data,
+                DecimalValue = request?.Decimal
             };
         }
 

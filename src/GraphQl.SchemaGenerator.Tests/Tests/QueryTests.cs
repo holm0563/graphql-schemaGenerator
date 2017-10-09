@@ -332,6 +332,32 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             GraphAssert.QuerySuccess(schema, query, expected);
         }
 
+        [Fact]
+        public void GetNullDecimalAsVariable_IsSafe()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"
+                query($ts:Decimal!)
+                {
+                    testRequest(request:{decimal:$ts}){decimalValue}
+                }                
+            ";
+
+            var variables = @"{
+                ts:1.23
+            }";
+
+            var expected = @"{
+              testRequest: {
+                decimalValue:1.23
+              }
+            }";
+
+            GraphAssert.QuerySuccess(schema, query, expected, variables);
+        }
+
         //todo:
         //[Fact]
         public void BasicInterfaceExample_Works()
