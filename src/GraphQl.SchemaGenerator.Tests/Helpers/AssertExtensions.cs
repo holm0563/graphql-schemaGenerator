@@ -11,12 +11,14 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
 {
     public static class GraphAssert
     {
-        public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null)
+        public static void QuerySuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null, bool compareBoth = true)
         {
             var exec = new DocumentExecuter(new GraphQLDocumentBuilder(), new DocumentValidator(), new ComplexityAnalyzer());
             var result = exec.ExecuteAsync(schema, null, query, null, variables?.ToInputs()).Result;
+            var result2 = DocumentOperations.ExecuteOperationsAsync(schema, null, query, variables?.ToInputs()).Result;
 
             var writtenResult = JsonConvert.SerializeObject(result.Data);
+            var writtenResult2 = JsonConvert.SerializeObject(result2.Data);
             var queryResult = CreateQueryResult(expected);
             var expectedResult = JsonConvert.SerializeObject(queryResult.Data);
 
@@ -26,6 +28,23 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
 
             Assert.Null(errors?.Message);
             Assert.Equal(expectedResult, writtenResult);
+            Assert.Equal(expectedResult, writtenResult2);
+        }
+
+        public static void QueryOperationsSuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null, bool compareBoth = true)
+        {
+            var result2 = DocumentOperations.ExecuteOperationsAsync(schema, null, query, variables?.ToInputs()).Result;
+
+            var writtenResult2 = JsonConvert.SerializeObject(result2.Data);
+            var queryResult = CreateQueryResult(expected);
+            var expectedResult = JsonConvert.SerializeObject(queryResult.Data);
+
+            var errors = result2.Errors?.FirstOrDefault();
+            //for easy debugging
+            var allTypes = schema.AllTypes;
+
+            Assert.Null(errors?.Message);
+            Assert.Equal(expectedResult, writtenResult2);
         }
 
         private static ExecutionResult CreateQueryResult(string result)

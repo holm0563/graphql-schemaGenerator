@@ -88,6 +88,7 @@ namespace GraphQL.SchemaGenerator
                             Inputs = inputs,
                             CancellationToken = cancellationToken,
                             ValidationRules = rules,
+                            OperationName = operation.Name,
                             EnableDocumentValidation = false,
                             EnableLogging = false
                         });

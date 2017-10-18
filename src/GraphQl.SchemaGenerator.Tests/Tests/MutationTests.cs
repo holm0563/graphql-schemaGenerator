@@ -53,6 +53,38 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             GraphAssert.QuerySuccess(schema, query, expected);
         }
 
+
+        [Fact]
+        public void BasicExample_WithQueryAndMutation_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    setState (request:Open){
+                        state
+                    }
+                }
+                query GetState{
+                    getState{
+                        state
+                    }
+                }
+            ";
+
+            var expected = @"{
+              SetState:{setState: {
+                state: ""Open""
+              }},
+             GetState:{getState: {
+                state: ""Open""
+              }
+            }}";
+
+            GraphAssert.QueryOperationsSuccess(schema, query, expected);
+        }
+
         [Fact]
         public void BasicExample_WithDecimal_Works()
         {
