@@ -31,15 +31,22 @@ namespace GraphQL.SchemaGenerator
             CancellationToken cancellationToken = default(CancellationToken),
             IEnumerable<IValidationRule> rules = null,
             bool validate = true,
-            IDocumentBuilder documentBuilder = null
+            IDocumentBuilder documentBuilder = null,
+            int? maxOperationNodes = null,
+            int? maxTasksAllowed = null
         )
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
 
+            if (savedDocument.Document.Operations.Sum(t => t.Children.Sum(i=>i.Children.Count())) > maxOperationNodes)
+            {
+                throw new InvalidOperationException($"Graph query contains more than the allowed operation limit ({maxOperationNodes}) for one request.");
+            }
+
             if (savedDocument.Document.Operations == null || savedDocument.Document.Operations.Count() <= 1)
             {
                 //run the typical way.
-                var defaultBuilder = new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance);
+                var defaultBuilder = new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance, maxTasksAllowed);
 
                 return
                     await
@@ -53,13 +60,14 @@ namespace GraphQL.SchemaGenerator
                                 CancellationToken = cancellationToken,
                                 ValidationRules = rules,
                                 EnableDocumentValidation = validate,
-                                EnableLogging = false
+                                EnableMetrics = false,
+                                SetFieldMiddleware = false
                             });
             }
 
             var result = new ExecutionResult();
             var nonValidatedExecutionar =
-                new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance);
+                new DocumentExecuter(savedDocument, DocumentValidator, ComplexityAnalyzerInstance, maxTasksAllowed);
             var aggregateData = new Dictionary<string, object>();
 
             try
@@ -90,7 +98,8 @@ namespace GraphQL.SchemaGenerator
                             ValidationRules = rules,
                             OperationName = operation.Name,
                             EnableDocumentValidation = false,
-                            EnableLogging = false
+                            EnableMetrics = false,
+                            SetFieldMiddleware = false
                         });
 
                     if (opResult.Errors != null && opResult.Errors.Any())

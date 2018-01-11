@@ -23,10 +23,12 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
             var expectedResult = JsonConvert.SerializeObject(queryResult.Data);
 
             var errors = result.Errors?.FirstOrDefault();
+            var errors2 = result2.Errors?.FirstOrDefault();
             //for easy debugging
             var allTypes = schema.AllTypes;
 
             Assert.Null(errors?.Message);
+            Assert.Null(errors2?.Message);
             Assert.Equal(expectedResult, writtenResult);
             Assert.Equal(expectedResult, writtenResult2);
         }

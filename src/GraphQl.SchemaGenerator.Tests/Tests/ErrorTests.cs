@@ -20,9 +20,115 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             {
                 e = er;
             }
+
             //this should pass whenever the change is pushed.
             Assert.NotNull(e);
             Assert.Contains("SameRoute", e.Message);
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenExceeded_Throws()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"{
+                  testRequest {value}
+                  t2:testRequest {value}
+                }";
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 1));
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenExceededWithNodes_Throws()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"query{
+                  t2:testRequest {value, value, value}
+                }
+                query{t1:testRequest{value}}
+                ";
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 1));
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenExceededWithMutations_Throws()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    setState (request:Open){
+                        state
+                    }
+                }
+                query GetState{
+                    getState{
+                        state
+                    }
+                }
+            ";
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 1));
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenNotExceeded_Runs()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"{
+                  testRequest {value}
+                  t2:testRequest {value}
+                }";
+
+            await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 2);
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenNotExceededWithNodes_Runs()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
+
+            var query = @"query{
+                  t2:testRequest {value, value, value}
+                }
+                query{t1:testRequest{value}}
+                ";
+
+            await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 2);
+        }
+
+        [Fact]
+        public async void OperationLimit_WhenNotExceededWithMutations_Runs()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    setState (request:Open){
+                        state
+                    }
+                }
+                query GetState{
+                    getState{
+                        state
+                    }
+                }
+            ";
+
+            await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 2);
         }
     }
 }
