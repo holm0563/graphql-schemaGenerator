@@ -23,7 +23,7 @@ namespace GraphQL.SchemaGenerator
                     isNotNull = false;
                     propertyType = propertyType.GetGenericArguments()[0];
                 }
-                else
+                else if (!isInputType)
                 {
                     isNotNull = true;
                 }

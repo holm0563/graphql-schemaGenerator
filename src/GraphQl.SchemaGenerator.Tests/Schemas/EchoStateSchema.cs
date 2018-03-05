@@ -29,6 +29,21 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             return GetState();
         }
 
+        [Description(@"Sets both the data and state.")]
+        [GraphRoute(isMutation: true)]
+        public StateResponse SetAdvanced(SetRequestAdvanced request)
+        {
+            State.Data = request.Data + request.NonRequiredInt;
+            State.State = request.State ?? ValidStates.Open;
+            State.Decimal = request.Decimal;
+
+            if (request.NonRequiredBool)
+            {
+                State.State = ValidStates.Closed;
+            }
+
+            return GetState();
+        }
         [Description(@"Sets the state.")]
         [GraphRoute(isMutation: true)]
         public StateResponse SetState(ValidStates request)
@@ -67,5 +82,11 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
 
         [Required]
         public int Data { get; set; }
+    }
+
+    public class SetRequestAdvanced: SetRequest
+    {
+        public bool NonRequiredBool { get; set; }
+        public int NonRequiredInt { get; set; }
     }
 }

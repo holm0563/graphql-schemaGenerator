@@ -167,13 +167,13 @@ namespace GraphQL.SchemaGenerator.Helpers
 
         public static bool IsNotNull(FieldInfo field)
         {
-            return field.GetCustomAttribute<NotNullAttribute>() != null &&
+            return field.GetCustomAttribute<NotNullAttribute>() != null ||
                 field.GetCustomAttribute<RequiredAttribute>() != null;
         }
 
         public static bool IsNotNull(PropertyInfo property)
         {
-            return property.GetCustomAttribute<NotNullAttribute>() != null &&
+            return property.GetCustomAttribute<NotNullAttribute>() != null ||
                 property.GetCustomAttribute<RequiredAttribute>() != null;
         }
 

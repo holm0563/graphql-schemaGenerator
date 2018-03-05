@@ -109,6 +109,49 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
         }
 
         [Fact]
+        public async void BasicExample_WithoutInt_Fails()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    set(request:{decimal:24.15}){
+                        decimal
+                    }
+                }
+            ";
+
+            var result = await DocumentOperations.ExecuteOperationsAsync(schema, null, query);
+            Assert.NotEmpty(result.Errors);
+        }
+
+        [Fact]
+        public void SetAdvanced_WithSameQuery_WorksBackwardsCompatible()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    set:setAdvanced(request:{decimal:24.15, data:2}){
+                        data
+                        state
+                    }
+                }
+            ";
+
+            var expected = @"{
+              set: {
+                data: 2,
+                state: ""Open""
+              }
+            }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
         public void AdvancedExample_WithEnums_Works()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
