@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GraphQL.SchemaGenerator.Extensions;
+using GraphQL.SchemaGenerator.Models;
 using GraphQL.SchemaGenerator.Types;
 using GraphQL.SchemaGenerator.Wrappers;
 using GraphQL.Types;
@@ -9,29 +10,34 @@ namespace GraphQL.SchemaGenerator
 {
     public class GraphTypeConverter
     {
-        public static Type ConvertTypeToGraphType(Type propertyType, bool isNotNull = false, bool isInputType = false)
+        public static Type ConvertTypeToGraphType(Type propertyType, RequiredType requiredType = RequiredType.Default, bool isInputType = false)
         {
             if (typeof(GraphType).IsAssignableFrom(propertyType))
             {
                 return propertyType;
             }
 
-            if (propertyType.IsValueType)
+            if (requiredType == RequiredType.Default && propertyType.IsValueType)
             {
                 if (propertyType.IsAssignableToGenericType(typeof(Nullable<>)))
                 {
-                    isNotNull = false;
+                    requiredType = RequiredType.NotRequired;
                     propertyType = propertyType.GetGenericArguments()[0];
                 }
-                else if (!isInputType)
+                else
                 {
-                    isNotNull = true;
+                    requiredType = RequiredType.Required;
                 }
             }
 
             var graphType = BaseGraphType(propertyType, isInputType);
 
-            if (graphType != null && isNotNull )
+            if (propertyType == typeof(string) && isInputType)
+            {
+                return graphType;
+            }
+
+            if (graphType != null && requiredType == RequiredType.Required)
             {
                 if (!typeof(NonNullGraphType).IsAssignableFrom(graphType))
                 {
@@ -46,6 +52,7 @@ namespace GraphQL.SchemaGenerator
         ///     Get the base graph type not worrying about null.
         /// </summary>
         /// <param name="propertyType">Property type.</param>
+        /// <param name="isInputType">Is an input type.</param>
         /// <returns>Type</returns>
         /// <exception cref="NotSupportedException">Cannot support IEnumerable when wrapping an object with GraphQL</exception>
         private static Type BaseGraphType(Type propertyType, bool isInputType = false)
@@ -76,12 +83,12 @@ namespace GraphQL.SchemaGenerator
                 return typeof(StringGraphType);
             }
 
-            if (isIntegerType(propertyType))
+            if (IsIntegerType(propertyType))
             {
                 return typeof(IntGraphType);
             }
 
-            if (isDecimalType(propertyType))
+            if (IsDecimalType(propertyType))
             {
                 return typeof(DecimalGraphType);
             }
@@ -92,7 +99,13 @@ namespace GraphQL.SchemaGenerator
             }
 
             if (propertyType == typeof(DateTime)
-            || (propertyType == typeof(DateTimeOffset)))
+            || propertyType == typeof(DateTimeOffset))
+            {
+                return typeof(OriginalDateGraphType);
+            }
+
+            if (propertyType == typeof(DateTime?)
+                || propertyType == typeof(DateTimeOffset?))
             {
                 return typeof(OriginalDateGraphType);
             }
@@ -159,7 +172,7 @@ namespace GraphQL.SchemaGenerator
             return typeof(ObjectGraphTypeWrapper<>).MakeGenericType(propertyType);
         }
 
-        private static bool isDecimalType(Type type)
+        private static bool IsDecimalType(Type type)
         {
             var typeCode = Type.GetTypeCode(type);
 
@@ -174,7 +187,7 @@ namespace GraphQL.SchemaGenerator
             }
         }
 
-        private static bool isIntegerType(Type type)
+        private static bool IsIntegerType(Type type)
         {
             var typeCode = Type.GetTypeCode(type);
 

@@ -155,17 +155,17 @@ namespace GraphQL.SchemaGenerator
         {
             foreach (var property in properties.OrderBy(p => p.Name))
             {
-                bool isNotNull = TypeHelper.IsNotNull(property);
+                var required = TypeHelper.IsNotNull(property);
 
                 var propertyGraphType = TypeHelper.GetGraphType(property);
                 if (propertyGraphType != null)
                 {
-                    propertyGraphType = GraphTypeConverter.ConvertTypeToGraphType(propertyGraphType, isNotNull, isInputType);
+                    propertyGraphType = GraphTypeConverter.ConvertTypeToGraphType(propertyGraphType, required, isInputType);
                     propertyGraphType = EnsureList(property.PropertyType, propertyGraphType);
                 }
                 else
                 {
-                    propertyGraphType = GraphTypeConverter.ConvertTypeToGraphType(property.PropertyType, isNotNull, isInputType);
+                    propertyGraphType = GraphTypeConverter.ConvertTypeToGraphType(property.PropertyType, required, isInputType);
                 }
 
                 var name = StringHelper.GraphName(property.Name);
@@ -184,17 +184,17 @@ namespace GraphQL.SchemaGenerator
         {
             foreach (var field in fields.OrderBy(f => f.Name))
             {
-                bool isNotNull = TypeHelper.IsNotNull(field);
+                var required = TypeHelper.IsNotNull(field);
 
                 var fieldGraphType = TypeHelper.GetGraphType(field);
                 if (fieldGraphType != null)
                 {
-                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(fieldGraphType, isNotNull, isInputType);
+                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(fieldGraphType, required, isInputType);
                     fieldGraphType = EnsureList(field.FieldType, fieldGraphType);
                 }
                 else
                 {
-                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, isNotNull, isInputType);
+                    fieldGraphType = GraphTypeConverter.ConvertTypeToGraphType(field.FieldType, required, isInputType);
                 }
 
                 var addedField = graphType.AddField(new FieldType { 
@@ -221,17 +221,17 @@ namespace GraphQL.SchemaGenerator
                     continue;
                 }
 
-                bool isNotNull = TypeHelper.IsNotNull(method);
+                var required = TypeHelper.IsNotNull(method);
                 var returnGraphType = TypeHelper.GetGraphType(method);
                 var methodGraphType = returnGraphType;
                 if (methodGraphType != null)
                 {
-                    methodGraphType = GraphTypeConverter.ConvertTypeToGraphType(methodGraphType, isNotNull);
+                    methodGraphType = GraphTypeConverter.ConvertTypeToGraphType(methodGraphType, required);
                     methodGraphType = EnsureList(method.ReturnType, methodGraphType);
                 }
                 else
                 {
-                    methodGraphType = GraphTypeConverter.ConvertTypeToGraphType(method.ReturnType, isNotNull);
+                    methodGraphType = GraphTypeConverter.ConvertTypeToGraphType(method.ReturnType, required);
                 }
 
                 var arguments =
@@ -268,16 +268,16 @@ namespace GraphQL.SchemaGenerator
 
         private static QueryArgument CreateArgument(ParameterInfo parameter)
         {
-            var isNotNull = TypeHelper.IsNotNull(parameter);
+            var required = TypeHelper.IsNotNull(parameter);
             var parameterGraphType = TypeHelper.GetGraphType(parameter);
             if (parameterGraphType != null)
             {
-                parameterGraphType = GraphTypeConverter.ConvertTypeToGraphType(parameterGraphType, isNotNull);
+                parameterGraphType = GraphTypeConverter.ConvertTypeToGraphType(parameterGraphType, required);
                 parameterGraphType = EnsureList(parameter.ParameterType, parameterGraphType);
             }
             else
             {
-                parameterGraphType = GraphTypeConverter.ConvertTypeToGraphType(parameter.ParameterType, isNotNull);
+                parameterGraphType = GraphTypeConverter.ConvertTypeToGraphType(parameter.ParameterType, required);
             }
 
             return new QueryArgument(parameterGraphType)

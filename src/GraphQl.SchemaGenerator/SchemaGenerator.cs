@@ -196,7 +196,7 @@ namespace GraphQL.SchemaGenerator
 
         private static Type GetRequestArgumentType(Type parameterType)
         {
-            var requestType = GraphTypeConverter.ConvertTypeToGraphType(parameterType, false, true);
+            var requestType = GraphTypeConverter.ConvertTypeToGraphType(parameterType, RequiredType.NotRequired, true);
             var requestArgumentType = typeof(QueryArgument<>).MakeGenericType(requestType);
 
             return requestArgumentType;

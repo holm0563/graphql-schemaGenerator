@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using GraphQL.SchemaGenerator.Attributes;
+using GraphQL.SchemaGenerator.Extensions;
+using GraphQL.SchemaGenerator.Models;
 
 namespace GraphQL.SchemaGenerator.Helpers
 {
@@ -160,27 +162,75 @@ namespace GraphQL.SchemaGenerator.Helpers
             return null;
         }
 
-        public static bool IsNotNull(MethodInfo method)
+        public static RequiredType IsNotNull(MethodInfo method)
         {
-            return method.GetCustomAttribute<NotNullAttribute>() != null;
+            var explicitSetting = method.GetCustomAttribute<GraphNotRequiredAttribute>();
+            if (explicitSetting != null)
+            {
+                return explicitSetting.Type;
+            }
+
+            if (method.GetCustomAttribute<NotNullAttribute>() != null ||
+                method.GetCustomAttribute<RequiredAttribute>() != null)
+            {
+                return RequiredType.Required;
+            }
+
+            return RequiredType.Default;
         }
 
-        public static bool IsNotNull(FieldInfo field)
+        public static RequiredType IsNotNull(FieldInfo field)
         {
-            return field.GetCustomAttribute<NotNullAttribute>() != null ||
-                field.GetCustomAttribute<RequiredAttribute>() != null;
+            var explicitSetting = field.GetCustomAttribute<GraphNotRequiredAttribute>();
+            if (explicitSetting != null)
+            {
+                return explicitSetting.Type;
+            }
+
+            if (field.GetCustomAttribute<NotNullAttribute>() != null ||
+                (field.GetCustomAttribute<RequiredAttribute>() != null &&
+                 !field.FieldType.IsAssignableToGenericType(typeof(Nullable<>))))
+            {
+                return RequiredType.Required;
+            }
+
+            return RequiredType.Default;
         }
 
-        public static bool IsNotNull(PropertyInfo property)
+        public static RequiredType IsNotNull(PropertyInfo property)
         {
-            return property.GetCustomAttribute<NotNullAttribute>() != null ||
-                property.GetCustomAttribute<RequiredAttribute>() != null;
+            var explicitSetting = property.GetCustomAttribute<GraphNotRequiredAttribute>();
+            if (explicitSetting != null)
+            {
+                return explicitSetting.Type;
+            }
+
+            if (property.GetCustomAttribute<NotNullAttribute>() != null ||
+                (property.GetCustomAttribute<RequiredAttribute>() != null && 
+                !property.PropertyType.IsAssignableToGenericType(typeof(Nullable<>))) )
+            {
+                return RequiredType.Required;
+            }
+
+            return RequiredType.Default;
         }
 
-        public static bool IsNotNull(ParameterInfo parameter)
+        public static RequiredType IsNotNull(ParameterInfo parameter)
         {
-            return parameter.GetCustomAttribute<NotNullAttribute>() != null ||
-                parameter.GetCustomAttribute<RequiredAttribute>() != null;
+            var explicitSetting = parameter.GetCustomAttribute<GraphNotRequiredAttribute>();
+            if (explicitSetting != null)
+            {
+                return explicitSetting.Type;
+            }
+
+            if (parameter.GetCustomAttribute<NotNullAttribute>() != null ||
+                (parameter.GetCustomAttribute<RequiredAttribute>() != null &&
+                 !parameter.ParameterType.IsAssignableToGenericType(typeof(Nullable<>))))
+            {
+                return RequiredType.Required;
+            }
+
+            return RequiredType.Default;
         }
 
         public static string GetDisplayName(Type type)

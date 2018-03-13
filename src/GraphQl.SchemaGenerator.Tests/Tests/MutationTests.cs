@@ -152,6 +152,62 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
         }
 
         [Fact]
+        public void SetAdvanced_WithNullableParam_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState($dec:Decimal!, $int:Int!, $int2:Int!, $date1:Date!, $str:String){
+                    set:setAdvanced(request:{decimal:$dec, data:$int, nonRequiredInt:$int2, nullRequiredDateTime:$date1, notRequiredString:$str}){
+                        decimal
+                        data
+                        state
+                    }
+                }
+            ";
+
+            var expected = @"{
+              set: {
+                decimal:24.15,
+                data: 3,
+                state: ""Open""
+              }
+            }";
+
+            GraphAssert.QuerySuccess(schema, query, expected, "{dec:24.15, int:2, int2:1, date1:\"1-1-2011\"}");
+        }
+
+        [Theory]
+        [InlineData("String!","String!")]
+        [InlineData("String","String!")]
+        [InlineData("String!","String")]
+        [InlineData("String", "String")]
+        public void SetAdvancedString_WithStringParam_Works(string var1, string var2)
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState($str:"+var1+ @", $str2:" + var2 + @"){
+                    set:setAdvancedString(request:{requiredString:$str, notRequiredString:$str2}){
+                        requiredString
+                        notRequiredString
+                    }
+                }
+            ";
+
+            var expected = @"{
+              set: {
+                requiredString:""Yes"",
+                notRequiredString: """"
+              }
+            }";
+
+            GraphAssert.QuerySuccess(schema, query, expected, "{str:\"Yes\", str2:\"\"}");
+        }
+
+        [Fact]
         public void AdvancedExample_WithEnums_Works()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
@@ -231,6 +287,37 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                 ]
               }
             }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        /// <summary>
+        ///     Introspection was not working on Inputs due to a bug in GraphQl
+        /// </summary>
+        [Fact]
+        public void SetRequestAdvancedString_Introspection_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"{
+                __type(name:""Input_SetRequestAdvancedString""){
+                        name
+                        inputFields{
+                            name
+                            type{
+                                kind
+                                ofType{
+                                    kind
+                                }
+                            }
+                        }
+                    }
+                }
+            ";
+
+            var expected = @"
+              {""__type"":{""name"":""Input_SetRequestAdvancedString"",""inputFields"":[{""name"":""nonRequiredBool"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""notRequiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""nullRequiredDateTime"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""requiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}}]}}";
 
             GraphAssert.QuerySuccess(schema, query, expected);
         }

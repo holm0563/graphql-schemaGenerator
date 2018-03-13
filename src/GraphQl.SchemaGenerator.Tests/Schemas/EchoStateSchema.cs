@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GraphQL.SchemaGenerator.Attributes;
+using GraphQL.SchemaGenerator.Models;
 
 namespace GraphQL.SchemaGenerator.Tests.Schemas
 {
@@ -29,7 +31,6 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             return GetState();
         }
 
-        [Description(@"Sets both the data and state.")]
         [GraphRoute(isMutation: true)]
         public StateResponse SetAdvanced(SetRequestAdvanced request)
         {
@@ -44,6 +45,13 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
 
             return GetState();
         }
+
+        [GraphRoute(isMutation: true)]
+        public SetRequestAdvancedString SetAdvancedString(SetRequestAdvancedString request)
+        {
+            return request;
+        }
+
         [Description(@"Sets the state.")]
         [GraphRoute(isMutation: true)]
         public StateResponse SetState(ValidStates request)
@@ -78,15 +86,35 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
     {
         public ValidStates? State { get; set; }
 
-        public decimal? Decimal { get; set; }
+       public decimal? Decimal { get; set; }
 
-        [Required]
-        public int Data { get; set; }
+       [Required]
+       public int Data { get; set; }
     }
 
     public class SetRequestAdvanced: SetRequest
     {
+        [GraphNotRequired]
         public bool NonRequiredBool { get; set; }
+        [GraphNotRequired]
         public int NonRequiredInt { get; set; }
+        //defaults to not required unless [GraphNotRequired(required)] is set.
+        [Required]
+        public DateTime? NullRequiredDateTime { get; set; }
+        public string NotRequiredString{ get; set; }
+    }
+
+    public class SetRequestAdvancedString
+    {
+        [GraphNotRequired]
+        public bool NonRequiredBool { get; set; }
+        //defaults to required
+        [Required]
+        public string RequiredString { get; set; }
+        //defaults to not required unless [GraphNotRequired(required)] is set.
+        [Required]
+        public DateTime? NullRequiredDateTime { get; set; }
+        //default to not required
+        public string NotRequiredString { get; set; }
     }
 }
