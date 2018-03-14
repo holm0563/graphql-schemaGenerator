@@ -189,7 +189,7 @@ namespace GraphQL.SchemaGenerator.Helpers
 
             if (field.GetCustomAttribute<NotNullAttribute>() != null ||
                 (field.GetCustomAttribute<RequiredAttribute>() != null &&
-                 !field.FieldType.IsAssignableToGenericType(typeof(Nullable<>))))
+                 ShouldBeNotNullWithRequiredAttribute(field.FieldType)))
             {
                 return RequiredType.Required;
             }
@@ -206,13 +206,33 @@ namespace GraphQL.SchemaGenerator.Helpers
             }
 
             if (property.GetCustomAttribute<NotNullAttribute>() != null ||
-                (property.GetCustomAttribute<RequiredAttribute>() != null && 
-                !property.PropertyType.IsAssignableToGenericType(typeof(Nullable<>))) )
+                (property.GetCustomAttribute<RequiredAttribute>() != null &&
+                 ShouldBeNotNullWithRequiredAttribute(property.PropertyType)))
             {
                 return RequiredType.Required;
             }
 
             return RequiredType.Default;
+        }
+
+        public static bool ShouldBeNotNullWithRequiredAttribute(Type type)
+        {
+            if (type.IsAssignableToGenericType(typeof(Nullable<>)))
+            {
+                return false;
+            }
+
+            if (type.IsAssignableToGenericType(typeof(IDictionary<,>)))
+            {
+                return false;
+            }
+
+            if (type.IsAssignableToGenericType(typeof(IEnumerable<>)))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public static RequiredType IsNotNull(ParameterInfo parameter)

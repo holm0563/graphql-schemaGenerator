@@ -316,8 +316,8 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
                 }
             ";
 
-            var expected = @"
-              {""__type"":{""name"":""Input_SetRequestAdvancedString"",""inputFields"":[{""name"":""nonRequiredBool"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""notRequiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""nullRequiredDateTime"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""requiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}}]}}";
+            var expected =
+                @"{""__type"":{""name"":""Input_SetRequestAdvancedString"",""inputFields"":[{""name"":""nonRequiredBool"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""nonRequiredObject"",""type"":{""kind"":""INPUT_OBJECT"",""ofType"":null}},{""name"":""notRequiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""nullRequiredDateTime"",""type"":{""kind"":""SCALAR"",""ofType"":null}},{""name"":""requiredObject"",""type"":{""kind"":""INPUT_OBJECT"",""ofType"":null}},{""name"":""requiredObjects"",""type"":{""kind"":""LIST"",""ofType"":{""kind"":""INPUT_OBJECT""}}},{""name"":""requiredString"",""type"":{""kind"":""SCALAR"",""ofType"":null}}]}}";
 
             GraphAssert.QuerySuccess(schema, query, expected);
         }

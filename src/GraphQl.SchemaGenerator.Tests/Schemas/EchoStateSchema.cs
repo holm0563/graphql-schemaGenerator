@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GraphQL.SchemaGenerator.Attributes;
@@ -108,7 +109,7 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
     {
         [GraphNotRequired]
         public bool NonRequiredBool { get; set; }
-        //defaults to required
+        //defaults to required (strings can be null)
         [Required]
         public string RequiredString { get; set; }
         //defaults to not required unless [GraphNotRequired(required)] is set.
@@ -116,5 +117,11 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
         public DateTime? NullRequiredDateTime { get; set; }
         //default to not required
         public string NotRequiredString { get; set; }
+        //defaults to not required unless [GraphNotRequired(required)] is set.
+        [Required]
+        public IList<SetRequest> RequiredObjects{get;set;}
+        public SetRequest NonRequiredObject { get; set; }
+        [Required]
+        public SetRequest RequiredObject { get; set; }
     }
 }

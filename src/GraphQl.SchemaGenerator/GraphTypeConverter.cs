@@ -37,6 +37,11 @@ namespace GraphQL.SchemaGenerator
                 return graphType;
             }
 
+            if (graphType.IsAssignableToGenericType(typeof(InputObjectGraphTypeWrapper<>)))
+            {
+                return graphType;
+            }
+
             if (graphType != null && requiredType == RequiredType.Required)
             {
                 if (!typeof(NonNullGraphType).IsAssignableFrom(graphType))
