@@ -10,7 +10,7 @@ This uses [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet) a
 
 Define your routes with the GraphRoute attribute:
 
-```
+```cs
 /// <summary>
 ///     An example of the sdk that could be exposed. This is decorated with attributes to self generate a graph schema. 
 /// </summary>
@@ -37,7 +37,7 @@ public class StarWarsAttributeSchema
 
 ## Example Usage
 
-```
+```cs
 
 IServiceProvider provider = new MockServiceProvider(); //Resolves your classes
 var schemaGenerator = new SchemaGenerator(provider);
