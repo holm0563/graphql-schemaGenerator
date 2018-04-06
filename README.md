@@ -1,6 +1,6 @@
 # Schema Generator - GraphQL for .NET
 
-This uses [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet) and wraps it to easily generate a graph ql schema based on c# models. The shema generator will automatically create a schema on existing c# models. This includes every response model, request model, and composed classes in these models. This can save a lot of time with an existing SDK or API project that is adding graph ql support.
+This uses [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet) and wraps it to easily generate a GraphQL schema based on C# models. The schema generator will automatically create a schema from existing C# models. This includes every response model, request model, and composed class in these models. This can save a lot of time with an existing SDK or API project that is adding GraphQL support.
 
 ## Installation
 
@@ -10,9 +10,10 @@ This uses [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet) a
 
 Define your routes with the GraphRoute attribute:
 
-```
+```csharp
 /// <summary>
-///     An example of the sdk that could be exposed. This is decorated with attributes to self generate a graph schema. 
+///     An example of the sdk that could be exposed. This is decorated with
+///     attributes to self generate a graph schema. 
 /// </summary>
 public class StarWarsAttributeSchema
 {
@@ -37,15 +38,14 @@ public class StarWarsAttributeSchema
 
 ## Example Usage
 
-```
-
+```csharp
 IServiceProvider provider = new MockServiceProvider(); //Resolves your classes
 var schemaGenerator = new SchemaGenerator(provider);
 //See the readme.md in the schema generator project for more details on what this is doing.
 var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
 
-//Standard graph ql execution
- var query = @"
+//Standard GraphQL execution
+var query = @"
                 query HeroNameQuery {
                   hero {
                     name
@@ -54,7 +54,6 @@ var schema = schemaGenerator.CreateSchema(typeof(StarWarsAttributeSchema));
             ";
 var exec = new DocumentExecuter(new AntlrDocumentBuilder(), new DocumentValidator());
 var result = exec.ExecuteAsync(schema, null, query, null).Result;
-
 ```
 
 ## Roadmap
