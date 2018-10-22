@@ -38,7 +38,7 @@ namespace GraphQL.SchemaGenerator
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
 
-            if (savedDocument.Document.Operations.Sum(t => t.Children.Sum(i=>i.Children.Count())) > maxOperationNodes)
+            if (savedDocument.OperationNodes > maxOperationNodes)
             {
                 throw new InvalidOperationException($"Graph query contains more than the allowed operation limit ({maxOperationNodes}) for one request.");
             }
@@ -145,6 +145,21 @@ namespace GraphQL.SchemaGenerator
         public Document Build(string body)
         {
             return Document;
+        }
+
+        public int OperationNodes
+        {
+            get
+            {
+                if (Document?.Operations == null)
+                {
+                    return 0;
+                }
+
+                var count = Document.Operations.Sum(t => t.SelectionSet.Selections.Count());
+
+                return count;
+            }
         }
     }
 }

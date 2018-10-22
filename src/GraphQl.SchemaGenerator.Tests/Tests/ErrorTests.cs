@@ -130,5 +130,30 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 2);
         }
+
+        [Fact]
+        public async void OperationLimit_WhenNotExceededWithParameters_Runs()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState($begin: Date!,  $end: Date!, $test: String, $test2: String){
+                    setState (request:Open){
+                        state
+                    }
+                }
+                query GetState($begin: Date!,  $end: Date!, $test: String, $test2: String){
+                    getState{
+                        state
+                    }
+                    state2:getState{
+                        state
+                    }
+                }
+            ";
+
+            await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 3);
+        }
     }
 }
