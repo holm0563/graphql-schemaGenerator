@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 using GraphQL.SchemaGenerator.Attributes;
 
 namespace GraphQL.SchemaGenerator.Tests.Schemas
@@ -9,6 +11,7 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
         [GraphRoute]
         public Dates Dates(Dates dates)
         {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
             return dates;
         }
 
@@ -18,6 +21,8 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
     {
         public DateTimeOffset? Offset { get; set; }
         public DateTime? DateTime { get; set; }
+
+        public DateTime? DateUTC => DateTime.Value.ToUniversalTime();
 
         public DateTime? Y2k { get; } = new DateTime(2000, 1, 1);
 

@@ -35,7 +35,7 @@ namespace GraphQL.Types
             if (DateTime.TryParse(
                 inputValue,
                 CultureInfo.CurrentCulture,
-                DateTimeStyles.NoCurrentDateDefault,
+                DateTimeStyles.RoundtripKind,
                 out outputValue))
             {
                 return outputValue;
