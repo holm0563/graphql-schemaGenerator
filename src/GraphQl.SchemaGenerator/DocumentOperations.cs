@@ -33,7 +33,8 @@ namespace GraphQL.SchemaGenerator
             bool validate = true,
             IDocumentBuilder documentBuilder = null,
             int? maxOperationNodes = null,
-            int? maxTasksAllowed = null
+            int? maxTasksAllowed = null,
+            IList<string> blackListedOperations = null
         )
         {
             var savedDocument = new SavedDocumentBuilder(query, documentBuilder);
@@ -41,6 +42,23 @@ namespace GraphQL.SchemaGenerator
             if (savedDocument.OperationNodes > maxOperationNodes)
             {
                 throw new InvalidOperationException($"Graph query contains more than the allowed operation limit ({maxOperationNodes}) for one request.");
+            }
+
+            if (blackListedOperations != null && blackListedOperations.Any())
+            {
+                var selections = savedDocument.Document.Operations.SelectMany(i => i.SelectionSet.Selections);
+                foreach (var selection in selections)
+                {
+
+                    if (selection != null)
+                    {
+                        var name = (selection as Field)?.Name;
+                        if (blackListedOperations.Contains(name))
+                        {
+                            throw new InvalidOperationException($"Graph query contains a restricted operation '{name}'.");
+                        }
+                    }
+                }
             }
 
             if (savedDocument.Document.Operations == null || savedDocument.Document.Operations.Count() <= 1)

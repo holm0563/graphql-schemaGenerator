@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GraphQL.Execution;
 using GraphQL.Http;
 using GraphQL.Validation;
@@ -33,9 +34,9 @@ namespace GraphQL.SchemaGenerator.Tests.Helpers
             Assert.Equal(expectedResult, writtenResult2);
         }
 
-        public static void QueryOperationsSuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null, bool compareBoth = true)
+        public static void QueryOperationsSuccess(GraphQL.Types.Schema schema, string query, string expected, string variables = null, bool compareBoth = true, IList<string> blackListedOperations = null)
         {
-            var result2 = DocumentOperations.ExecuteOperationsAsync(schema, null, query, variables?.ToInputs()).Result;
+            var result2 = DocumentOperations.ExecuteOperationsAsync(schema, null, query, variables?.ToInputs(), blackListedOperations: blackListedOperations).Result;
 
             var writtenResult2 = JsonConvert.SerializeObject(result2.Data);
             var queryResult = CreateQueryResult(expected);

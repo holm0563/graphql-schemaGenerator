@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
 using Xunit;
@@ -154,6 +155,70 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             ";
 
             await DocumentOperations.ExecuteOperationsAsync(schema, null, query, maxOperationNodes: 3);
+        }
+
+
+        [Fact]
+        public async void Blacklist_WithQueryAndMutation_Fails()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    outer:setState (request:Open){
+                        state
+                    }
+                }
+                query GetState{
+                    getState{
+                        state
+                    }
+                }
+            ";
+
+            var blackList = new List<string>
+            {
+                "setState"
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                DocumentOperations.ExecuteOperationsAsync(schema, null, query, blackListedOperations:blackList));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("SetState")]
+        [InlineData("GetState")]
+        [InlineData("setStatev2")]
+        [InlineData("inner")]
+        [InlineData("outer")]
+        public async void Blacklist_WithQueryAndMutation_Works(string testOp)
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(EchoStateSchema));
+
+            var query = @"
+                mutation SetState{
+                    outer:setState (request:Open){
+                        inner:state
+                    }
+                }
+                query GetState{
+                    getState{
+                        state
+                    }
+                }
+            ";
+
+            var blackList = new List<string>
+            {
+                testOp
+            };
+
+            
+            await DocumentOperations.ExecuteOperationsAsync(schema, null, query, blackListedOperations: blackList);
         }
     }
 }

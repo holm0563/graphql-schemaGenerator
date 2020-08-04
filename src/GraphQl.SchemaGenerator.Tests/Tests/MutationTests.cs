@@ -1,4 +1,6 @@
-﻿using GraphQL.SchemaGenerator.Tests.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using GraphQL.SchemaGenerator.Tests.Helpers;
 using GraphQL.SchemaGenerator.Tests.Mocks;
 using GraphQL.SchemaGenerator.Tests.Schemas;
 using Xunit;
