@@ -27,12 +27,11 @@ namespace GraphQL.SchemaGenerator.Extensions
             var routeArguments = new List<object>();
             foreach (var parameter in field.Method.GetParameters())
             {
-                if (!type.Arguments.ContainsKey(parameter.Name))
+                if (!type.Arguments.TryGetValue(parameter.Name, out var arg))
                 {
+                    routeArguments.Add(null);
                     continue;
                 }
-
-                var arg = type.Arguments[parameter.Name];
 
                 if (arg == null)
                 {
