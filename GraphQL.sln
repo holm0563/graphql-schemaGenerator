@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.SchemaGenerator", "src\GraphQl.SchemaGenerator\GraphQL.SchemaGenerator.csproj", "{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}"
 EndProject
@@ -13,16 +13,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4052E386-847B-4F3C-957C-0B957E319127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4052E386-847B-4F3C-957C-0B957E319127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4052E386-847B-4F3C-957C-0B957E319127}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{4052E386-847B-4F3C-957C-0B957E319127}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{4052E386-847B-4F3C-957C-0B957E319127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4052E386-847B-4F3C-957C-0B957E319127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB2FBE11-C733-4101-81BB-A7C99B986004}
 	EndGlobalSection
 EndGlobal
