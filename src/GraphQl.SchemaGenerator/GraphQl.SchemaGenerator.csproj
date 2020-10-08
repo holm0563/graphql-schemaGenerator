@@ -26,6 +26,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GraphQL-Parser" Version="3.0.0" />    
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
