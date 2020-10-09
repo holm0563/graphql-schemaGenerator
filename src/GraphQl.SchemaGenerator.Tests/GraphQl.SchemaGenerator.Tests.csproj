@@ -23,10 +23,9 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="GraphQL">
-      <HintPath>..\..\lib\GraphQL.dll</HintPath>
+      <HintPath>..\..\lib\netstandard2.0\GraphQL.dll</HintPath>
     </Reference>
   </ItemGroup>
 
