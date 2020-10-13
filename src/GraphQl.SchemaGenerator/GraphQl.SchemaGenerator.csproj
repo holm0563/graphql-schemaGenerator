@@ -1,57 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <AssemblyTitle>GraphQL.SchemaGenerator</AssemblyTitle>
-    <Product>GraphQL.SchemaGenerator</Product>
+    <Product>Navitaire.DotRez.GraphQL.SchemaGenerator</Product>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>0.2.0.0</Version>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);GetInteropFile</TargetsForTfmSpecificBuildOutput>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
+  
+  <Target Name="GetInteropFile">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutDir)\GraphQL.dll">
+        <FinalOutputPath>$([System.IO.Path]::GetFullPath('$(OutDir)\GraphQL.dll'))</FinalOutputPath>
+      </BuildOutputInPackage>
+    </ItemGroup>
+  </Target>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="GraphQL-Parser" Version="3.0.0" />    
+    <PackageReference Include="GraphQL-Parser" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <Reference Include="GraphQL">
+      <HintPath>..\..\lib\$(TargetFramework)\GraphQL.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+
   </ItemGroup>
-  <ItemGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK'))">
-    <!--<Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-      <Private>True</Private>
-    </Reference>-->
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="Models\GraphControllerDefinition.cs" />
     <Compile Remove="Models\GraphRouteDefinition.cs" />
     <Compile Remove="Schema\GraphTypesLookup.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="GraphQL">
-      <HintPath>..\..\lib\GraphQL.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
 </Project>

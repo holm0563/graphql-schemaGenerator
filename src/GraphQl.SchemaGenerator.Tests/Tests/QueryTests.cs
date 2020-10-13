@@ -19,7 +19,7 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             var schema = schemaGenerator.CreateSchema(typeof(EchoSchema));
 
             var sut = schema.AllTypes;
-            Assert.True(sut.Any(t => t.Name == "Input_Schema1Request"));
+            Assert.NotNull(sut.FirstOrDefault(t => t.Name == "Input_Schema1Request"));
         }
 
         [Fact]

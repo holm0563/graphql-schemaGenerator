@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.SchemaGenerator", "src\GraphQl.SchemaGenerator\GraphQL.SchemaGenerator.csproj", "{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQL.SchemaGenerator", "src\GraphQl.SchemaGenerator\GraphQL.SchemaGenerator.csproj", "{0FF5301B-4CD7-409A-9D02-9390DE7BEBA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.SchemaGenerator.Tests", "src\GraphQl.SchemaGenerator.Tests\GraphQL.SchemaGenerator.Tests.csproj", "{4052E386-847B-4F3C-957C-0B957E319127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQL.SchemaGenerator.Tests", "src\GraphQl.SchemaGenerator.Tests\GraphQL.SchemaGenerator.Tests.csproj", "{4052E386-847B-4F3C-957C-0B957E319127}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
