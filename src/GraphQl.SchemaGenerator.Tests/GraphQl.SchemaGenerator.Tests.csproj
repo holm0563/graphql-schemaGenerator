@@ -6,6 +6,7 @@
     <Product>GraphQl.SchemaGenerator.Tests</Product>
     <Copyright>Copyright ©  2016</Copyright>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,9 +24,15 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
+  
   <ItemGroup>
-    <Reference Include="GraphQL">
+    <Reference Include="GraphQL" Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
       <HintPath>..\..\lib\netstandard2.0\GraphQL.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="GraphQL" Condition="'$(TargetFramework)' == 'net462'">
+      <HintPath>..\..\lib\net462\GraphQL.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
 

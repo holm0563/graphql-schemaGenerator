@@ -1,0 +1,36 @@
+﻿<Project>
+
+  <PropertyGroup Label="VersionInfo">
+    <VersionMajor>0</VersionMajor>
+    <VersionMinor>2</VersionMinor>
+    <VersionPatch>4</VersionPatch>
+    <!-- $d1 = '2020-01-01'; $d2 = '2020-10-12'; $ts = New-TimeSpan -Start $d1 -End $d2; "20$($ts.Days)" -->
+    <VersionBuild>20285</VersionBuild>
+    <IsPrerelease>false</IsPrerelease>
+    <VersionSuffix>prerelease</VersionSuffix>
+    <VersionSuffixCount>0</VersionSuffixCount>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
+    <VersionBuild>$(VersionBuild)</VersionBuild>
+    <VersionSuffix Condition="'$(IsPrerelease)' == 'true'">$(VersionSuffix)$(VersionSuffixCount)</VersionSuffix>
+    <VersionSuffix Condition="'$(IsPrerelease)' != 'true'"></VersionSuffix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyVersion>$(VersionPrefix).$(VersionBuild)</AssemblyVersion>
+    <FileVersion>$(VersionPrefix).$(VersionBuild)</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPrerelease)' == 'true'">
+    <InformationalVersion>$(VersionPrefix)-$(VersionSuffix)</InformationalVersion>
+    <PackageVersion>$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPrerelease)' != 'true'">
+    <InformationalVersion>$(VersionPrefix)</InformationalVersion>
+    <PackageVersion>$(VersionPrefix)</PackageVersion>
+  </PropertyGroup>
+
+</Project>
