@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
     <AssemblyTitle>GraphQl.SchemaGenerator.Tests</AssemblyTitle>
     <Product>GraphQl.SchemaGenerator.Tests</Product>
     <Copyright>Copyright ©  2016</Copyright>
@@ -25,17 +25,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="GraphQL">
-      <HintPath>..\..\lib\GraphQL.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GraphQl.SchemaGenerator\GraphQL.SchemaGenerator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="GraphQL">
+      <HintPath>..\..\lib\netstandard2.0\GraphQL.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyTitle>GraphQL.SchemaGenerator</AssemblyTitle>
     <Product>GraphQL.SchemaGenerator</Product>
     <Copyright>Copyright © 2020</Copyright>
@@ -47,11 +47,11 @@
     <Compile Remove="Schema\GraphTypesLookup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GraphQL">
-      <HintPath>..\..\lib\GraphQL.dll</HintPath>
-    </Reference>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Reference Include="GraphQL">
+      <HintPath>..\..\lib\netstandard2.0\GraphQL.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
