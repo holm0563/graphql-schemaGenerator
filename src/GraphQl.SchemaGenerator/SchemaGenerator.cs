@@ -154,7 +154,7 @@ namespace GraphQL.SchemaGenerator
         /// <returns></returns>
         public static Type EnsureGraphType(Type parameterType)
         {
-            if (parameterType == null || parameterType == typeof(void))
+            if (parameterType == null || parameterType == typeof(void) || parameterType == typeof(Task))
                 return typeof(StringGraphType);
 
             if (typeof(GraphType).IsAssignableFrom(parameterType))

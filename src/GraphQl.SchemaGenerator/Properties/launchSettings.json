@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GraphQL.SchemaGenerator": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

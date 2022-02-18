@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using GraphQL.Execution;
 using GraphQL.Http;
 using GraphQL.SchemaGenerator.Tests.Helpers;
@@ -230,10 +232,47 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
 
             Assert.Null(errors?.Message);
             Assert.True(writtenResult.Contains("{VerifyComment}"));
+            Assert.False(writtenResult.Contains("\"Task\""));
+            Assert.False(writtenResult.Contains("\"MethodBase\""));
         }
 
         [Fact]
         public void WithNull_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(AsyncSchema));
+
+            var query = @"{
+                  testRequest {nullValue}
+                }";
+
+            var expected = @"{
+              testRequest: {nullValue:null}
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+        [Fact]
+        public void WithTask_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(AsyncSchema));
+
+            var query = @"{
+                  notRecommendedToReturnATask
+                }";
+
+            var expected = @"{
+              notRecommendedToReturnATask:{}
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
+
+
+        [Fact]
+        public void WithTaskReturnType_HidesTask()
         {
             var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
             var schema = schemaGenerator.CreateSchema(typeof(AsyncSchema));

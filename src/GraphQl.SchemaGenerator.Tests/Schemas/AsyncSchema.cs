@@ -33,6 +33,12 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             return await Task.FromResult(schema.TestEnumerable(request));
         }
 
+        [GraphRoute]
+        public async Task NotRecommendedToReturnATask()
+        {
+            await Task.Delay(1);
+        }
+
     }
 
   
