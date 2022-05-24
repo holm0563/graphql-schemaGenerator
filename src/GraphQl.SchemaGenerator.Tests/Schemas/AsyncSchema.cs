@@ -39,6 +39,12 @@ namespace GraphQL.SchemaGenerator.Tests.Schemas
             await Task.Delay(1);
         }
 
+        [GraphRoute(isMutation:true)]
+        public Task NotRecommendedToReturnAMutationTask()
+        {
+            return Task.Run(() => "");
+        }
+
     }
 
   
