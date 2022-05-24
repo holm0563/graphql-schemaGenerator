@@ -270,6 +270,22 @@ namespace GraphQL.SchemaGenerator.Tests.Tests
             GraphAssert.QuerySuccess(schema, query, expected);
         }
 
+        [Fact]
+        public void WithTaskMutation_Works()
+        {
+            var schemaGenerator = new SchemaGenerator(new MockServiceProvider());
+            var schema = schemaGenerator.CreateSchema(typeof(AsyncSchema));
+
+            var query = @"mutation m{
+                  r:notRecommendedToReturnAMutationTask
+                }";
+
+            var expected = @"{
+              r:""""
+                }";
+
+            GraphAssert.QuerySuccess(schema, query, expected);
+        }
 
         [Fact]
         public void WithTaskReturnType_HidesTask()
